@@ -8,6 +8,7 @@ import { AuthModule } from './features/auth/auth-module';
 import { ProductModule } from './features/product/product-module';
 import { HomeModule } from './features/home/home-module';
 import { SharedModule } from './shared/shared-module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SharedModule } from './shared/shared-module';
     AuthModule,
     ProductModule,
     HomeModule,
-    SharedModule
+    SharedModule,
+    HttpClientModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners()

@@ -1,22 +1,31 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private tokenKey = 'token';
-  private roleKey = 'role';
 
-  isLoggedInSignal = signal(false);
+  private apiUrl = 'https://fakestoreapi.com/auth/login';
+  private tokenKey = 'auth_token';
 
-  login(username: string, password: string) {
+  private isLoggedInSignal = signal(false);
 
-    // Aqui você chamaria a API da FakeStore (POST /auth/login)
-    // Para fins de exemplo, vamos mockar:
-    const mockToken = 'fake-jwt-token';
+  constructor(private http: HttpClient) {
+    const storedToken = localStorage.getItem(this.tokenKey);
+    if (storedToken) {
+      this.isLoggedInSignal.set(true);
+    }
+  }
 
-    localStorage.setItem(this.tokenKey, mockToken);
-    this.isLoggedInSignal.set(true);
+  login(credentials: any): Observable<any> {
+    return this.http.post<string>(this.apiUrl, credentials).pipe(
+      tap(data => {
+        localStorage.setItem(this.tokenKey, data);
+        this.isLoggedInSignal.set(true);
+      })
+    );
   }
 
   logout() {
@@ -25,6 +34,6 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+    return this.isLoggedInSignal();
   }
 }
