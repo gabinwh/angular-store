@@ -5,17 +5,21 @@ import { LoginComponent } from './login-component/login-component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CreateUserModal } from './create-user-modal/create-user-modal';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
   declarations: [
-    LoginComponent
+    LoginComponent,
+    CreateUserModal
   ],
   imports: [
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTooltipModule
   ]
 })
 export class AuthModule { }

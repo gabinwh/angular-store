@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { UserInterface } from '../../shared/utils/interface';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +22,6 @@ export class AuthService {
   login(credentials: { username: string, password: string }): Observable<any> {
     return this.http.post<any>(this.apiUrl, credentials).pipe(
       tap(data => {
-        console.log(data);
         localStorage.setItem(this.tokenKey, data.token);
         this.isLoggedInSignal.set(true);
       })
@@ -37,14 +35,5 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return this.isLoggedInSignal();
-  }
-
-  createUser(newUser: UserInterface): Observable<any> {
-    return this.http.post<any>(this.apiUrl, newUser).pipe(
-      tap(data => {
-        console.log(data);
-        this.isLoggedInSignal.set(false);
-      })
-    );
   }
 }

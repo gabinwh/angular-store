@@ -9,6 +9,8 @@ import { ProductModule } from './features/product/product-module';
 import { HomeModule } from './features/home/home-module';
 import { SharedModule } from './shared/shared-module';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { HttpClientModule } from '@angular/common/http';
     ProductModule,
     HomeModule,
     SharedModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     provideBrowserGlobalErrorListeners()

@@ -1,0 +1,44 @@
+<div class="modal-header">
+    <h5 class="modal-title">Cadastrar Usuário</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('fechar')"></button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="form">
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Usuário</mat-label>
+            <input formControlName="username" matInput type="text" placeholder="Insira o nome do usuário" />
+            @if (getErrorMessage('username')) {
+            <mat-error>
+                {{getErrorMessage('username')}}
+            </mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Email</mat-label>
+            <input formControlName="email" matInput type="email" placeholder="Insira o email" />
+            @if (getErrorMessage('email')) {
+            <mat-error>
+                {{getErrorMessage('email')}}
+            </mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Senha</mat-label>
+            <input formControlName="password" matInput type="password" placeholder="Insira a senha" />
+            @if (getErrorMessage('password')) {
+            <mat-error>
+                {{getErrorMessage('password')}}
+            </mat-error>
+            }
+        </mat-form-field>
+    </form>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss('cancelar')">Cancelar</button>
+    <span [matTooltip]="defineToolTipBtnSave()" matTooltipPosition="above">
+        <button [disabled]="!form.valid" type="button" class="btn btn-primary" (click)="onRegister()">Salvar</button>
+    </span>
+</div>

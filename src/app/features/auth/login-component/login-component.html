@@ -24,7 +24,8 @@
         </mat-form-field>
       </form>
     </div>
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <button type="button" class="btn btn-link p-0" (click)="openRegisterModal()">Cadastrar conta</button>
       <button [disabled]="!form.valid" type="button" class="btn btn-primary" (click)="onLogin()">Enviar</button>
     </div>
     

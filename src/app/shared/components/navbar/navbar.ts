@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +11,8 @@ import { AuthService } from '../../../core/services/auth-service';
 export class Navbar {
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private toastrService: ToastrService
   ) { }
 
   get isLoggedIn(): boolean {
@@ -19,5 +21,6 @@ export class Navbar {
 
   logout(): void {
     this.authService.logout();
+    this.toastrService.success("Logout realizado com sucesso!");
   }
 }

@@ -1,28 +1,24 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../../core/services/auth-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { CreateUserModal } from '../create-user-modal/create-user-modal';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from '../../../core/services/user-service';
 
 @Component({
-  selector: 'app-login-component',
+  selector: 'app-create-user-modal',
   standalone: false,
-  templateUrl: './login-component.html',
-  styleUrl: './login-component.scss'
+  templateUrl: './create-user-modal.html',
+  styleUrl: './create-user-modal.scss'
 })
-export class LoginComponent {
+export class CreateUserModal {
   constructor(
+    protected activeModal: NgbActiveModal,
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private modalService: NgbModal,
-    private toastrService: ToastrService,
+    private userService: UserService,
+    private toastrService: ToastrService
   ) { }
 
   form!: FormGroup;
-  errorMessage: string | null = null;
 
   ngOnInit() {
 
@@ -34,6 +30,7 @@ export class LoginComponent {
     this.form = this.fb.group({
       username: [null, [Validators.required, Validators.maxLength(20), Validators.minLength(1)]],
       password: [null, [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
+      email: [null, [Validators.email, Validators.required, Validators.maxLength(150), Validators.minLength(3)]]
     });
   }
 
@@ -43,6 +40,8 @@ export class LoginComponent {
     if (!control || !control.errors) return undefined;
 
     if (control.hasError('required')) return 'Campo obrigatório.';
+
+    if (control.hasError('email')) return 'Email inválido.';
 
     if (control.hasError('maxlength')) {
       const erro = control.getError('maxlength');
@@ -57,27 +56,22 @@ export class LoginComponent {
     return undefined;
   }
 
-  onLogin(): void {
+  defineToolTipBtnSave(): string | null {
+    return !this.form.valid ? "O formulário está inválido." : null;
+  }
+
+  onRegister(): void {
     if (this.form.valid) {
-      this.authService.login(this.form.value).subscribe({
-        next: data => {
-          this.router.navigate(['/home']);
-          this.toastrService.success("Login realizado com sucesso!");
+      this.userService.createUser(this.form.value).subscribe({
+        next: (userResponse) => {
+          this.toastrService.success('Conta criada com sucesso!', 'Sucesso!');
+          this.activeModal.close(userResponse); // Fecha o modal e passa os dados
         },
-        error: error => {
-          this.errorMessage = 'Usuário ou senha inválidos. Por favor, tente novamente.';
-          this.toastrService.error("Não foi possível realizar o Login!");
+        error: (error) => {
+          this.toastrService.error('Ocorreu um erro ao criar a conta.', error);
+          console.error('Erro ao registrar:', error);
         }
       });
     }
-  }
-
-  openRegisterModal(): void {
-    const modalRef: NgbModalRef = this.modalService.open(CreateUserModal, {
-      size: 'lg',
-      centered: true,
-      backdrop: 'static',
-      keyboard: false
-    });
   }
 }
