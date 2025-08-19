@@ -4,7 +4,7 @@ import { HomeComponent } from './features/home/home-component/home-component';
 import { ProductDetailComponent } from './features/product/product-detail-component/product-detail-component';
 import { LoginComponent } from './features/auth/login-component/login-component';
 import { CartComponent } from './features/cart/cart-component/cart-component';
-import { AuthGuard } from './core/guards/auth-guard';
+import { authGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -13,12 +13,12 @@ const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
 
-  { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
+  { path: 'cart', component: CartComponent, canActivate: [authGuard] },
 
   {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin-module').then(m => m.AdminModule),
-    canActivate: [AuthGuard]
+    canActivate: [authGuard]
   },
 
   // Rota padrão (redireciona para a página inicial)

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -7,20 +8,16 @@ import { Observable, tap } from 'rxjs';
 })
 export class AuthService {
 
+  private httpService = inject(HttpClient);
+  private routerService = inject(Router);
+  
   private apiUrl = 'https://fakestoreapi.com/auth/login';
   private tokenKey = 'auth_token';
 
   private isLoggedInSignal = signal(false);
 
-  constructor(private http: HttpClient) {
-    const storedToken = localStorage.getItem(this.tokenKey);
-    if (storedToken) {
-      this.isLoggedInSignal.set(true);
-    }
-  }
-
   login(credentials: { username: string, password: string }): Observable<any> {
-    return this.http.post<any>(this.apiUrl, credentials).pipe(
+    return this.httpService.post<any>(this.apiUrl, credentials).pipe(
       tap(data => {
         localStorage.setItem(this.tokenKey, data.token);
         this.isLoggedInSignal.set(true);
@@ -31,6 +28,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this.tokenKey);
     this.isLoggedInSignal.set(false);
+    this.routerService.navigate(['/login'])
   }
 
   isLoggedIn(): boolean {
