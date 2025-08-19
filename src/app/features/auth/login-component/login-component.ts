@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserModal } from '../create-user-modal/create-user-modal';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from '../../../core/services/user-service';
 
 @Component({
   selector: 'app-login-component',
@@ -13,9 +14,13 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './login-component.scss'
 })
 export class LoginComponent {
+
+  @ViewChild('credentialsModalContent') credentialsModalContent: ElementRef | undefined;
+  
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     private modalService: NgbModal,
     private toastrService: ToastrService,
@@ -23,11 +28,32 @@ export class LoginComponent {
 
   form!: FormGroup;
   errorMessage: string | null = null;
+  isCredentialsLoading: boolean = false;
+  credentials: any = []
 
   ngOnInit() {
 
     this.initForm();
     this.form.markAllAsTouched();
+  }
+
+  openCredentialsModal(): void {
+    if (this.credentialsModalContent) {
+      this.isCredentialsLoading = true;
+      this.modalService.open(this.credentialsModalContent);
+      this.userService.getAllUsers().subscribe({
+        next: data => {
+          this.credentials = data;
+          this.toastrService.success("Credenciais carregadas com sucesso!");
+        },
+        error: error => {
+          this.toastrService.error("Não foi possível carregar credenciais!");
+        },
+        complete: () => {
+          this.isCredentialsLoading = false;
+        }
+      });
+    }
   }
 
   private initForm(): void {

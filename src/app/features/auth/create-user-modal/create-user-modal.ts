@@ -65,11 +65,10 @@ export class CreateUserModal {
       this.userService.createUser(this.form.value).subscribe({
         next: (userResponse) => {
           this.toastrService.success('Conta criada com sucesso!', 'Sucesso!');
-          this.activeModal.close(userResponse); // Fecha o modal e passa os dados
+          this.activeModal.close(); 
         },
         error: (error) => {
-          this.toastrService.error('Ocorreu um erro ao criar a conta.', error);
-          console.error('Erro ao registrar:', error);
+          this.toastrService.error('Ocorreu um erro ao criar a conta.', "Erro");
         }
       });
     }
