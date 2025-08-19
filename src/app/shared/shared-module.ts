@@ -1,22 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProductCard } from './components/product-card/product-card';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from './components/navbar-component/navbar-component';
+import { ProductCardComponent } from './components/product-card-component/product-card-component';
 
 
 
 @NgModule({
   declarations: [
-    ProductCard,
-    NavbarComponent
+    NavbarComponent,
+    ProductCardComponent
   ],
   imports: [
     CommonModule,
     RouterModule
   ],
   exports: [
-    ProductCard,
+    ProductCardComponent,
     NavbarComponent
   ]
 })
