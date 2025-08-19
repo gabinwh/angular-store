@@ -3,17 +3,15 @@ import { AuthService } from '../../../core/services/auth-service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-navbar',
+  selector: 'app-navbar-component',
   standalone: false,
-  templateUrl: './navbar.html',
-  styleUrl: './navbar.scss'
+  templateUrl: './navbar-component.html',
+  styleUrl: './navbar-component.scss'
 })
-export class Navbar {
+export class NavbarComponent {
 
-  constructor(
-    private authService: AuthService,
-    private toastrService: ToastrService
-  ) { }
+  private authService = inject(AuthService);
+  private toastrService = inject(ToastrService);
 
   get isLoggedIn(): boolean {
     return this.authService.isLoggedIn();

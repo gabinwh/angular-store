@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Navbar } from './components/navbar/navbar';
 import { ProductCard } from './components/product-card/product-card';
 import { RouterModule } from '@angular/router';
+import { NavbarComponent } from './components/navbar-component/navbar-component';
 
 
 
 @NgModule({
   declarations: [
-    Navbar,
-    ProductCard
+    ProductCard,
+    NavbarComponent
   ],
   imports: [
     CommonModule,
     RouterModule
   ],
   exports: [
-    Navbar,  
-    ProductCard
+    ProductCard,
+    NavbarComponent
   ]
 })
 export class SharedModule { }
