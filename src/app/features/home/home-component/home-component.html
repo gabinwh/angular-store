@@ -1,1 +1,11 @@
-<p>home-component works!</p>
+@if (isProductsLoading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+} @else {
+  <div class="row m-3">
+    @for (product of products; track product.id) {
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <app-product-card-component [product]="product"></app-product-card-component>
+      </div>
+    }
+  </div>
+}
