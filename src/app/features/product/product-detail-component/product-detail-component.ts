@@ -60,10 +60,15 @@ export class ProductDetailComponent {
 
   addToCart(): void {
     if (this.authService.isLoggedIn()) {
-      // O usuário está logado, adicione o produto ao carrinho
-      this.cartService.addToCart(this.product);
-      this.toastrService.success('Produto adicionado ao carrinho!', 'Sucesso!');
-      this.router.navigate(['/cart'])
+      this.cartService.updateCart([this.product]).subscribe({
+        next: data => {
+          this.toastrService.success('Product added to cart!', 'Success!');
+          this.router.navigate(['/cart'])
+        },
+        error: error => {
+          this.toastrService.error("Unable to add the product!");
+        }
+      });
     } else {
       this.toastrService.info('You must be logged in to add products to your cart.', 'Attention');
       this.router.navigate(['/login'], {
