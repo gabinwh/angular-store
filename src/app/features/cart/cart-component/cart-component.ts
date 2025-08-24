@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { CartService } from '../../../core/services/cart-service';
 import { ProductService } from '../../../core/services/product-service';
+import { CartProduct } from '../../../shared/utils/models';
 
 @Component({
   selector: 'app-cart-component',
@@ -11,7 +12,7 @@ import { ProductService } from '../../../core/services/product-service';
   styleUrl: './cart-component.scss'
 })
 export class CartComponent {
-  cartProducts: any[] = [];
+  cartProducts: CartProduct[] = [];
   totalPrice: number = 0;
   isLoading: boolean = true;
 
@@ -42,7 +43,6 @@ export class CartComponent {
 
         return forkJoin(productRequests).pipe(
           map(fetchedProducts => {
-            console.log(fetchedProducts);
             return fetchedProducts.map((product, index) => ({
               ...product,
               quantity: productsInCart[index].quantity
@@ -56,7 +56,6 @@ export class CartComponent {
       }),
       finalize(() => this.isLoading = false)
     ).subscribe(products => {
-      console.log(products);
       this.cartProducts = products;
       this.calculateTotalPrice();
     });
@@ -67,10 +66,10 @@ export class CartComponent {
   }
 
   removeFromCart(productId: number): void {
-    // Implement logic to remove from the cart, then reload the data.
+    //Implementação apenas visual, pois é uma FakeAPI
     this.toastrService.info('Item removed from cart!', 'Info');
-    // For now, we'll just filter it out from the display.
-    this.cartProducts = this.cartProducts.filter(item => item.id !== productId);
+    const cartProductsFiltered = this.cartProducts.filter(item => item.id !== productId);
+    this.cartProducts = cartProductsFiltered
     this.calculateTotalPrice();
   }
 }

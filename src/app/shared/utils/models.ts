@@ -26,3 +26,7 @@ export type CartResponse = {
     userId: number;
     products: { productId: number, quantity: number }[]
 }
+
+export type CartProduct = ProductResponse & {
+    quantity: number;
+}
