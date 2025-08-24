@@ -4,7 +4,7 @@
     <div>
       <form [formGroup]="form">
         <mat-form-field appearance="outline" class="w-100 mb-3">
-          <mat-label>Usuário</mat-label>
+          <mat-label>Username</mat-label>
           <input formControlName="username" matInput type="text" placeholder="Insira o nome do seu usuário" />
           @if (getErrorMessage('username')) {
           <mat-error>
@@ -14,7 +14,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-100 mb-3">
-          <mat-label>Senha</mat-label>
+          <mat-label>Password</mat-label>
           <input formControlName="password" matInput type="password" placeholder="Insira a sua senha" />
           @if (getErrorMessage('password')) {
           <mat-error>
@@ -26,9 +26,9 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-      <button type="button" class="btn btn-link p-0" (click)="openRegisterModal()">Cadastrar conta</button>
-      <button type="button" class="btn btn-info" (click)="openCredentialsModal()">Ver Credenciais</button>
-      <button [disabled]="!form.valid" type="button" class="btn btn-primary" (click)="onLogin()">Enviar</button>
+      <button type="button" class="btn btn-link p-0" (click)="openRegisterModal()">Create account</button>
+      <button type="button" class="btn btn-info" (click)="openCredentialsModal()">Credentials</button>
+      <button [disabled]="!form.valid" type="button" class="btn btn-primary" (click)="onLogin()">Submit</button>
     </div>
 
     @if (errorMessage) {
@@ -42,7 +42,7 @@
 <!-- Modal Template -->
 <ng-template #credentialsModalContent let-modal>
   <div class="modal-header">
-    <h5 class="modal-title">Credenciais do Sistema</h5>
+    <h5 class="modal-title">Credentials</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('fechar')"></button>
   </div>
   <div class="modal-body">
@@ -50,8 +50,8 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Usuário</th>
-          <th>Senha</th>
+          <th>Username</th>
+          <th>Password</th>
         </tr>
       </thead>
       <tbody>
@@ -66,13 +66,13 @@
     } @else {
     <div class="d-flex justify-content-center">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Carregando...</span>
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
     }
-    <small class="text-muted">Use estas credenciais para testar o login.</small>
+    <small class="text-muted">Use these credentials to test your login.</small>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancelar')">Fechar</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancelar')">Close</button>
   </div>
 </ng-template>

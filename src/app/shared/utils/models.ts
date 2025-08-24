@@ -20,3 +20,9 @@ export type Product = {
 export type ProductResponse = Product & {
     id: number;
 }
+
+export type CartResponse = {
+    id: number;
+    userId: number;
+    products: { productId: number, quantity: number }[]
+}

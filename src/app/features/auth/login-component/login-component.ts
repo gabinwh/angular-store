@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserModal } from '../create-user-modal/create-user-modal';
 import { ToastrService } from 'ngx-toastr';
@@ -16,7 +16,7 @@ import { UserService } from '../../../core/services/user-service';
 export class LoginComponent {
 
   @ViewChild('credentialsModalContent') credentialsModalContent: ElementRef | undefined;
-  
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -24,17 +24,20 @@ export class LoginComponent {
     private router: Router,
     private modalService: NgbModal,
     private toastrService: ToastrService,
+    private routeActivated: ActivatedRoute
   ) { }
 
   form!: FormGroup;
   errorMessage: string | null = null;
   isCredentialsLoading: boolean = false;
   credentials: any = []
+  private returnUrl: string | null = null;
 
   ngOnInit() {
 
     this.initForm();
     this.form.markAllAsTouched();
+    this.returnUrl = this.routeActivated.snapshot.queryParamMap.get('returnUrl');
   }
 
   openCredentialsModal(): void {
@@ -44,10 +47,10 @@ export class LoginComponent {
       this.userService.getAllUsers().subscribe({
         next: data => {
           this.credentials = data;
-          this.toastrService.success("Credenciais carregadas com sucesso!");
+          this.toastrService.success("Credentials loaded successfully!");
         },
         error: error => {
-          this.toastrService.error("Não foi possível carregar credenciais!");
+          this.toastrService.error("Unable to load credentials!");
         },
         complete: () => {
           this.isCredentialsLoading = false;
@@ -68,16 +71,16 @@ export class LoginComponent {
 
     if (!control || !control.errors) return undefined;
 
-    if (control.hasError('required')) return 'Campo obrigatório.';
+    if (control.hasError('required')) return 'Mandatory field.';
 
     if (control.hasError('maxlength')) {
       const erro = control.getError('maxlength');
-      return `Máximo de ${erro.requiredLength} caracteres permitidos.`;
+      return `Maximum ${erro.requiredLength} characters allowed.`;
     }
 
     if (control.hasError('minlength')) {
       const erro = control.getError('minlength');
-      return `Mínimo de ${erro.requiredLength} caracteres exigidos.`;
+      return `Minimum ${erro.requiredLength} characters required.`;
     }
 
     return undefined;
@@ -87,12 +90,16 @@ export class LoginComponent {
     if (this.form.valid) {
       this.authService.login(this.form.value).subscribe({
         next: data => {
-          this.router.navigate(['/home']);
-          this.toastrService.success("Login realizado com sucesso!");
+          if (this.returnUrl) {
+            this.router.navigateByUrl(this.returnUrl);
+          } else {
+            this.router.navigate(['/home']);
+          }
+          this.toastrService.success("Login successful!");
         },
         error: error => {
-          this.errorMessage = 'Usuário ou senha inválidos. Por favor, tente novamente.';
-          this.toastrService.error("Não foi possível realizar o Login!");
+          this.errorMessage = 'Invalid username or password. Please try again.';
+          this.toastrService.error("Unable to login!");
         }
       });
     }

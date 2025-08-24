@@ -1,1 +1,41 @@
-<p>product-detail-component works!</p>
+<div class="container mt-5">
+    @if (!isProductLoading) {
+    <div class="row">
+        <div class="col-md-5">
+            <img [src]="product.image" class="img-fluid rounded shadow-sm" alt="{{ product.title }}">
+        </div>
+        <div class="col-md-7 d-flex flex-column">
+            <div class="card-body">
+                <h1 class="card-title">{{ product.title }}</h1>
+                <h4 class="text-muted">{{ product.category }}</h4>
+                <hr>
+                <p class="lead fw-bold fs-2 text-primary">R$ {{ product.price | number:'1.2-2' }}</p>
+
+                <div class="d-flex align-items-center mb-3">
+                    <p class="mb-0 me-2">
+                        <span class="text-warning">
+                            {{ product.rating.rate }} ⭐
+                        </span>
+                        <small class="text-muted">({{ product.rating.count }} ratings)</small>
+                    </p>
+                </div>
+                <p class="mt-4">{{ product.description }}</p>
+
+                <button class="btn btn-primary btn-lg mt-3 w-100" (click)="addToCart()">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+    } @else {
+    @if (!hasError) {
+        <div class="d-flex justify-content-center mt-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    } @else {
+        <div class="alert alert-danger" role="alert">
+            Product not found or an error occurred.
+        </div>
+        }
+    }
+</div>
