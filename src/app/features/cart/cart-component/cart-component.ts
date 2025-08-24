@@ -72,4 +72,8 @@ export class CartComponent {
     this.cartProducts = cartProductsFiltered
     this.calculateTotalPrice();
   }
+
+  onCheckout(): void {
+    this.toastrService.info("Functionality under development.", 'Info')
+  }
 }
