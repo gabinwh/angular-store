@@ -1,6 +1,6 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; 
 import { ToastrModule } from 'ngx-toastr';
 
@@ -11,6 +11,7 @@ import { AuthModule } from './features/auth/auth-module';
 import { ProductModule } from './features/product/product-module';
 import { HomeModule } from './features/home/home-module';
 import { SharedModule } from './shared/shared-module';
+import { AuthInterceptor } from './core/interceptors/auth-interceptor';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,12 @@ import { SharedModule } from './shared/shared-module';
     ToastrModule.forRoot()
   ],
   providers: [
-    provideBrowserGlobalErrorListeners()
+    provideBrowserGlobalErrorListeners(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [App]
 })

@@ -34,4 +34,8 @@ export class AuthService {
   isLoggedIn(): boolean {
     return this.isLoggedInSignal();
   }
+
+  getUserToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
 }
