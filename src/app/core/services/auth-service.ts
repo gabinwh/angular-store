@@ -10,7 +10,7 @@ export class AuthService {
 
   private httpService = inject(HttpClient);
   private routerService = inject(Router);
-  
+
   private apiUrl = 'https://fakestoreapi.com/auth/login';
   private tokenKey = 'auth_token';
 
@@ -25,14 +25,14 @@ export class AuthService {
     );
   }
 
-  logout() {
+  logout():void {
     localStorage.removeItem(this.tokenKey);
     this.isLoggedInSignal.set(false);
     this.routerService.navigate(['/login'])
   }
 
   isLoggedIn(): boolean {
-    return this.isLoggedInSignal();
+    return this.getUserToken() !== null;
   }
 
   getUserToken(): string | null {
