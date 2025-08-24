@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
+import { CartService } from '../../../core/services/cart-service';
+import { ProductService } from '../../../core/services/product-service';
 
 @Component({
   selector: 'app-cart-component',
@@ -7,5 +11,66 @@ import { Component } from '@angular/core';
   styleUrl: './cart-component.scss'
 })
 export class CartComponent {
+  cartProducts: any[] = [];
+  totalPrice: number = 0;
+  isLoading: boolean = true;
 
+  constructor(
+    private toastrService: ToastrService,
+    private cartService: CartService,
+    private productService: ProductService
+  ) { }
+
+  ngOnInit(): void {
+    this.getCartProducts();
+  }
+
+  getCartProducts(): void {
+    this.isLoading = true;
+
+    this.cartService.getCartById().pipe(
+      switchMap(cart => {
+        const productsInCart = cart.products;
+
+        if (productsInCart.length === 0) {
+          return of([]);
+        }
+
+        const productRequests = productsInCart.map(item =>
+          this.productService.getProductById(item.productId)
+        );
+
+        return forkJoin(productRequests).pipe(
+          map(fetchedProducts => {
+            console.log(fetchedProducts);
+            return fetchedProducts.map((product, index) => ({
+              ...product,
+              quantity: productsInCart[index].quantity
+            }));
+          })
+        );
+      }),
+      catchError(error => {
+        this.toastrService.error('Failed to load cart data.', 'Error');
+        return of([]);
+      }),
+      finalize(() => this.isLoading = false)
+    ).subscribe(products => {
+      console.log(products);
+      this.cartProducts = products;
+      this.calculateTotalPrice();
+    });
+  }
+
+  calculateTotalPrice(): void {
+    this.totalPrice = this.cartProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  }
+
+  removeFromCart(productId: number): void {
+    // Implement logic to remove from the cart, then reload the data.
+    this.toastrService.info('Item removed from cart!', 'Info');
+    // For now, we'll just filter it out from the display.
+    this.cartProducts = this.cartProducts.filter(item => item.id !== productId);
+    this.calculateTotalPrice();
+  }
 }

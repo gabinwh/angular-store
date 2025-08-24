@@ -21,10 +21,10 @@ export class HomeComponent {
     this.productService.getAllProducts().subscribe({
       next: productResponse => {
         this.products = productResponse;
-        this.toastrService.success("Produtos carregados com sucesso!");
+        this.toastrService.success("Products loaded successfully!");
       },
       error: error => {
-        this.toastrService.error("Não foi possível carregar os produtos!");
+        this.toastrService.error("Unable to load products!");
       },
       complete: () => {
         this.isProductsLoading = false;
