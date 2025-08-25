@@ -17,10 +17,15 @@
 
             <ul class="navbar-nav">
                 @if (isLoggedIn) {
-                <li class="nav-item">
-                    <a class="nav-link" [routerLink]="['/admin']" routerLinkActive="active">
+                <li class="nav-item dropdown" ngbDropdown>
+                    <a class="nav-link dropdown-toggle" id="adminDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" ngbDropdownToggle>
                         Admin
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="adminDropdown" ngbDropdownMenu>
+                        <li><a class="dropdown-item" [routerLink]="['/admin']">Dashboard</a></li>
+                        <li><a class="dropdown-item" [routerLink]="['/admin/products']">Products Table</a></li>
+                    </ul>
                 </li>
                 }
                 <li class="nav-item">
@@ -35,10 +40,14 @@
                     </a>
                 </li>
                 } @else {
-                <li class="nav-item">
-                    <a class="nav-link" (click)="logout()">
-                        Logout
+                <li class="nav-item dropdown" ngbDropdown>
+                    <a class="nav-link dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" ngbDropdownToggle>
+                        Welcome, {{ userName }}
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="userDropdown" ngbDropdownMenu>
+                        <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+                    </ul>
                 </li>
                 }
             </ul>

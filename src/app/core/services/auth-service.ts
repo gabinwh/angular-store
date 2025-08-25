@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class AuthService {
     );
   }
 
-  logout():void {
+  logout(): void {
     localStorage.removeItem(this.tokenKey);
     this.isLoggedInSignal.set(false);
     this.routerService.navigate(['/login'])
@@ -37,5 +38,21 @@ export class AuthService {
 
   getUserToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  getUsernameFromToken(): string | null {
+    const token = this.getUserToken();
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const decodedToken: any = jwtDecode(token);
+      // Assumindo que a propriedade no token é 'username'
+      return decodedToken.user || null;
+    } catch (error) {
+      console.error("Failed to decode JWT token:", error);
+      return null;
+    }
   }
 }
