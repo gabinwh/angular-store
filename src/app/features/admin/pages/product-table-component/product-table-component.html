@@ -1,1 +1,91 @@
-<p>product-table-component works!</p>
+<div class="container mt-5">
+  <h2 class="mb-4">Products Table</h2>
+
+  <div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-success" (click)="openAddProductModal()">Add Product</button>
+  </div>
+
+  @if (isLoading) {
+  <div class="d-flex justify-content-center mt-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  }
+
+  @if (hasError) {
+  <div class="alert alert-danger mt-5" role="alert">
+    <h4 class="alert-heading">Error!</h4>
+    <p>Failed to load product data. Please try again later.</p>
+  </div>
+  }
+
+  @if (!isLoading && !hasError && products.length === 0) {
+  <div class="alert alert-info mt-5" role="alert">
+    <h4 class="alert-heading">No Products Found!</h4>
+    <p>The product list is currently empty.</p>
+  </div>
+  }
+
+  @if (!isLoading && !hasError && products.length > 0) {
+  <div class="table-responsive">
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Title</th>
+          <th scope="col">Category</th>
+          <th scope="col">Price</th>
+          <th scope="col">Actions</th> </tr>
+      </thead>
+      <tbody>
+        @for (product of products; track $index) {
+        <tr>
+          <td>{{ product.id }}</td>
+          <td>{{ product.title }}</td>
+          <td>{{ product.category }}</td>
+          <td>R$ {{ product.price | number:'1.2-2' }}</td>
+          <td>
+            <div ngbDropdown class="d-inline-block">
+              <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+                Actions
+              </button>
+              <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                <button ngbDropdownItem (click)="viewProduct(product)">View</button>
+                <button ngbDropdownItem (click)="editProduct(product)">Edit</button>
+                <button ngbDropdownItem (click)="deleteProduct(product.id)">Delete</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>
+
+<ng-template #viewProductModal let-modal>
+  @if (selectedProduct) {
+  <div class="modal-header">
+    <h5 class="modal-title" id="modalTitle">{{ selectedProduct.title }}</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <img [src]="selectedProduct.image" class="img-fluid mb-3" alt="{{ selectedProduct.title }}" style="max-height: 250px;">
+    <p>{{ selectedProduct.description }}</p>
+    <hr>
+    <div class="d-flex justify-content-between">
+      <p class="fw-bold">Category:</p>
+      <p>{{ selectedProduct.category }}</p>
+    </div>
+    <div class="d-flex justify-content-between">
+      <p class="fw-bold">Price:</p>
+      <p>R$ {{ selectedProduct.price | number:'1.2-2' }}</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+  </div>
+  }
+</ng-template>
