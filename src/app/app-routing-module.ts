@@ -5,6 +5,7 @@ import { ProductDetailComponent } from './features/product/product-detail-compon
 import { LoginComponent } from './features/auth/login-component/login-component';
 import { CartComponent } from './features/cart/cart-component/cart-component';
 import { authGuard } from './core/guards/auth-guard';
+import { AdminHomeComponent } from './features/admin/pages/admin-home-component/admin-home-component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin-module').then(m => m.AdminModule),
-    canActivate: [authGuard]
+    canActivate: [authGuard],
+    component: AdminHomeComponent
   },
 
   // Rota padrão (redireciona para a página inicial)

@@ -17,6 +17,10 @@ export class CartService {
     return this.httpService.get<CartResponse>(`${this.apiUrl}/${id}`)
   }
 
+  getAllCarts(): Observable<CartResponse[]> {
+    return this.httpService.get<CartResponse[]>(this.apiUrl);
+  }
+
   updateCart(products: ProductResponse[]): Observable<CartResponse>  {
     return this.httpService.put<CartResponse>(`${this.apiUrl}/${this.idStatic}`, products);
   }
