@@ -62,7 +62,6 @@ export class ProductTableComponent {
   }
 
   openEditProductModal(product: ProductResponse): void {
-    console.log(product)
     const modalRef = this.modalService.open(CreateEditProudct, {
       size: 'lg',
       centered: true,

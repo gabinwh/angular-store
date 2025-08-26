@@ -59,7 +59,7 @@
     <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
     @if (!isSending) {
     <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="form.invalid || isSending">
-        Add Product
+        {{defineLabelBtn()}}
     </button>
     } @else {
     <button type="button" class="btn btn-primary" disabled>

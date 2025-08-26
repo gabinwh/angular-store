@@ -54,6 +54,14 @@ export class CreateEditProudct {
     return undefined;
   }
 
+  defineLabelBtn(): string {
+    if (this.productToEdit && this.productToEdit.id) {
+      return 'Edit Product';
+    } else {
+      return 'Add Product';
+    }
+  }
+
   onSubmit(): void {
     if (this.form.valid) {
       this.isSending = true;
