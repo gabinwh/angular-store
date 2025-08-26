@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductService } from '../../../../core/services/product-service';
-import { CartService } from '../../../../core/services/cart-service';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
@@ -21,7 +20,6 @@ export class AdminHomeComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private cartService: CartService,
     private userService: UserService,
     private toastrService: ToastrService,
     private router: Router
@@ -36,19 +34,17 @@ export class AdminHomeComponent implements OnInit {
 
     forkJoin({
       products: this.productService.getAllProducts(),
-      carts: this.cartService.getAllCarts(),
       users: this.userService.getAllUsers()
     }).pipe(
       catchError(error => {
         this.toastrService.error('Unable to load dashboard data!', 'Error');
-        return of({ products: [], carts: [], users: [] }); 
+        return of({ products: [], users: [] }); 
       }),
       finalize(() => {
         this.isLoading = false; 
       })
     ).subscribe(data => {
       this.productCount = data.products.length;
-      this.cartCount = data.carts.length;
       this.userCount = data.users.length;
       this.toastrService.success("Dashboard data loaded successfully!");
     });

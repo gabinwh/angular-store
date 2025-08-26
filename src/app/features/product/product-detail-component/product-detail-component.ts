@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { map, Subscription, switchMap } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import { ProductService } from '../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { ProductResponse } from '../../../shared/utils/models';
@@ -60,15 +59,8 @@ export class ProductDetailComponent {
 
   addToCart(): void {
     if (this.authService.isLoggedIn()) {
-      this.cartService.updateCart([this.product]).subscribe({
-        next: data => {
-          this.toastrService.success('Product added to cart!', 'Success!');
-          this.router.navigate(['/cart'])
-        },
-        error: error => {
-          this.toastrService.error("Unable to add the product!");
-        }
-      });
+      this.cartService.addToCart(this.product);
+      this.toastrService.success('You have added this item to your cart.');
     } else {
       this.toastrService.info('You must be logged in to add products to your cart.', 'Attention');
       this.router.navigate(['/login'], {

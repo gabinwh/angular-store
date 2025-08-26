@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { CartService } from './cart-service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class AuthService {
 
   private httpService = inject(HttpClient);
   private routerService = inject(Router);
+  private cartService = inject(CartService)
 
   private apiUrl = 'https://fakestoreapi.com/auth/login';
   private tokenKey = 'auth_token';
@@ -28,8 +30,11 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+
+    this.cartService.clearCart(); 
+
     this.isLoggedInSignal.set(false);
-    this.routerService.navigate(['/login'])
+    this.routerService.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {

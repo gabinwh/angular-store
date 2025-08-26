@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { CartService } from '../../../core/services/cart-service';
 import { ProductService } from '../../../core/services/product-service';
-import { CartProduct } from '../../../shared/utils/models';
+import { CartProduct, ProductResponse } from '../../../shared/utils/models';
 
 @Component({
   selector: 'app-cart-component',
@@ -29,29 +29,28 @@ export class CartComponent {
   getCartProducts(): void {
     this.isLoading = true;
 
-    this.cartService.getCartById().pipe(
-      switchMap(cart => {
-        const productsInCart = cart.products;
+    const productsInCart = this.cartService.cartItems();
 
-        if (productsInCart.length === 0) {
-          return of([]);
-        }
+    if (productsInCart.length === 0) {
+      this.cartProducts = [];
+      this.isLoading = false;
+      this.calculateTotalPrice();
+      return;
+    }
 
-        const productRequests = productsInCart.map(item =>
-          this.productService.getProductById(item.productId)
-        );
+    const productRequests = productsInCart.map(item =>
+      this.productService.getProductById(item.productId)
+    );
 
-        return forkJoin(productRequests).pipe(
-          map(fetchedProducts => {
-            return fetchedProducts.map((product, index) => ({
-              ...product,
-              quantity: productsInCart[index].quantity
-            }));
-          })
-        );
+    forkJoin(productRequests).pipe(
+      map(fetchedProducts => {
+        return fetchedProducts.map((product, index) => ({
+          ...product,
+          quantity: productsInCart[index].quantity
+        }));
       }),
       catchError(error => {
-        this.toastrService.error('Failed to load cart data.', 'Error');
+        this.toastrService.error('Failed to load product data.', 'Error');
         return of([]);
       }),
       finalize(() => this.isLoading = false)
@@ -66,11 +65,22 @@ export class CartComponent {
   }
 
   removeFromCart(productId: number): void {
-    //Implementação apenas visual, pois é uma FakeAPI
+    this.cartService.removeFromCart(productId);
     this.toastrService.info('Item removed from cart!', 'Info');
-    const cartProductsFiltered = this.cartProducts.filter(item => item.id !== productId);
-    this.cartProducts = cartProductsFiltered
-    this.calculateTotalPrice();
+    this.getCartProducts();
+  }
+
+  decreaseQuantity(productId: number): void {
+    this.cartService.decreaseQuantity(productId);
+    this.toastrService.info('Quantidade do item diminuída!', 'Info');
+    this.getCartProducts();
+  }
+
+  // Novo método para aumentar a quantidade
+  increaseQuantity(product: ProductResponse): void {
+    this.cartService.increaseQuantity(product);
+    this.toastrService.info('Quantidade do item aumentada!', 'Info');
+    this.getCartProducts();
   }
 
   onCheckout(): void {

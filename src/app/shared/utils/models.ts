@@ -30,3 +30,8 @@ export type CartResponse = {
 export type CartProduct = ProductResponse & {
     quantity: number;
 }
+
+export interface CartItem {
+    productId: number;
+    quantity: number;
+}
