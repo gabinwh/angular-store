@@ -3,6 +3,7 @@ import { ProductService } from '../../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { ProductResponse } from '../../../../shared/utils/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CreateEditProudct } from '../modals/create-edit-proudct/create-edit-proudct';
 
 @Component({
   selector: 'app-product-table-component',
@@ -48,7 +49,11 @@ export class ProductTableComponent {
   }
 
   openAddProductModal(): void {
-    this.toastrService.info('Add Product functionality is not yet implemented.');
+    const modalRef = this.modalService.open(CreateEditProudct, {
+      size: 'lg',
+      centered: true,
+      backdrop: 'static',
+    });
   }
 
   viewProduct(product: ProductResponse): void {
@@ -56,8 +61,15 @@ export class ProductTableComponent {
     this.modalService.open(this.viewProductModal, { size: 'lg' });
   }
 
-  editProduct(product: any): void {
-    this.toastrService.info(`Editing product: ${product.title}`);
+  openEditProductModal(product: ProductResponse): void {
+    console.log(product)
+    const modalRef = this.modalService.open(CreateEditProudct, {
+      size: 'lg',
+      centered: true,
+      backdrop: 'static',
+    });
+
+    modalRef.componentInstance.productToEdit = product;
   }
 
   openDeleteModal(product: ProductResponse): void {
