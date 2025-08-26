@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar-component',
@@ -13,6 +14,7 @@ export class NavbarComponent {
   constructor(
     private authService: AuthService,
     private toastrService: ToastrService,
+    private router: Router
   ) { }
 
   get isLoggedIn(): boolean {
@@ -26,5 +28,13 @@ export class NavbarComponent {
   logout(): void {
     this.authService.logout();
     this.toastrService.success("Logout realizado com sucesso!");
+  }
+
+  navigateToDashboard(): void {
+    this.router.navigate(['/admin']);
+  }
+
+  navigateToProducts(): void {
+    this.router.navigate(['/admin/products']);
   }
 }

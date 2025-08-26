@@ -23,8 +23,8 @@
                         Admin
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="adminDropdown" ngbDropdownMenu>
-                        <li><a class="dropdown-item" [routerLink]="['/admin']">Dashboard</a></li>
-                        <li><a class="dropdown-item" [routerLink]="['/admin/products']">Products Table</a></li>
+                        <li><a class="dropdown-item" (click)="navigateToDashboard()">Dashboard</a></li>
+                        <li><a class="dropdown-item" (click)="navigateToProducts()">Products Table</a></li>
                     </ul>
                 </li>
                 }
