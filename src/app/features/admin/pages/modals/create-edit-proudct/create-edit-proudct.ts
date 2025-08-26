@@ -50,10 +50,6 @@ export class CreateEditProudct {
 
     if (control.hasError('required')) return 'Mandatory field.';
     if (control.hasError('min')) return 'The price must be greater than 0.';
-    if (control.hasError('minlength')) {
-      const erro = control.getError('minlength');
-      return `Minimum ${erro.requiredLength} characters required.`;
-    }
 
     return undefined;
   }
