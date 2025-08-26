@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -13,7 +13,6 @@ export class NavbarComponent {
   constructor(
     private authService: AuthService,
     private toastrService: ToastrService,
-    private cdr: ChangeDetectorRef
   ) { }
 
   get isLoggedIn(): boolean {

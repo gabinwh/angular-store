@@ -22,20 +22,18 @@ const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: '', // Rota padrão para /admin
+        path: '', 
         component: AdminHomeComponent
       },
       {
-        path: 'products', // Rota para /admin/products
+        path: 'products', 
         component: ProductTableComponent
       }
     ]
   },
 
-  // Rota padrão (redireciona para a página inicial)
   { path: '', redirectTo: '/home', pathMatch: 'full' },
 
-  // Rota curinga para lidar com caminhos não encontrados
   { path: '**', redirectTo: '/home' }
 ];
 

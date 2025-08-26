@@ -5,7 +5,7 @@
 <div class="modal-body">
     <form [formGroup]="form">
         <mat-form-field appearance="outline" class="w-100 mb-3">
-            <mat-label>Usuário</mat-label>
+            <mat-label>Username</mat-label>
             <input formControlName="username" matInput type="text" placeholder="Insira o nome do usuário" />
             @if (getErrorMessage('username')) {
             <mat-error>
@@ -25,7 +25,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-100 mb-3">
-            <mat-label>Senha</mat-label>
+            <mat-label>Password</mat-label>
             <input formControlName="password" matInput type="password" placeholder="Insira a senha" />
             @if (getErrorMessage('password')) {
             <mat-error>
@@ -37,8 +37,15 @@
 
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss('cancelar')">Cancelar</button>
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss('cancelar')">Cancel</button>
     <span [matTooltip]="defineToolTipBtnSave()" matTooltipPosition="above">
-        <button [disabled]="!form.valid" type="button" class="btn btn-primary" (click)="onRegister()">Salvar</button>
+        @if (!isSaving) {
+        <button [disabled]="!form.valid" type="button" class="btn btn-primary" (click)="onRegister()">Save</button>
+        } @else {
+        <button type="button" class="btn btn-primary" disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Saving...
+        </button>
+        }
     </span>
 </div>

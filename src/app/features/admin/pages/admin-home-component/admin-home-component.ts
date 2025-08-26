@@ -15,7 +15,7 @@ import { UserService } from '../../../../core/services/user-service';
 export class AdminHomeComponent implements OnInit {
   productCount: number = 0;
   userCount: number = 0;
-  isLoading: boolean = true; // Use um único estado de carregamento
+  isLoading: boolean = true; 
 
   constructor(
     private productService: ProductService,

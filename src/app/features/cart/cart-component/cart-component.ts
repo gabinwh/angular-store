@@ -72,13 +72,13 @@ export class CartComponent {
 
   decreaseQuantity(productId: number): void {
     this.cartService.decreaseQuantity(productId);
-    this.toastrService.info('Quantidade do item diminuída!', 'Info');
+    this.toastrService.info('Item quantity decreased!', 'Info');
     this.getCartProducts();
   }
 
   increaseQuantity(product: ProductResponse): void {
     this.cartService.increaseQuantity(product);
-    this.toastrService.info('Quantidade do item aumentada!', 'Info');
+    this.toastrService.info('Item quantity increased!', 'Info');
     this.getCartProducts();
   }
 

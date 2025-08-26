@@ -19,6 +19,7 @@ export class CreateUserModal {
   ) { }
 
   form!: FormGroup;
+  isSaving: boolean = false;
 
   ngOnInit() {
 
@@ -39,36 +40,40 @@ export class CreateUserModal {
 
     if (!control || !control.errors) return undefined;
 
-    if (control.hasError('required')) return 'Campo obrigatório.';
+    if (control.hasError('required')) return 'Mandatory field.';
 
-    if (control.hasError('email')) return 'Email inválido.';
+    if (control.hasError('email')) return 'Invalid email.';
 
     if (control.hasError('maxlength')) {
       const erro = control.getError('maxlength');
-      return `Máximo de ${erro.requiredLength} caracteres permitidos.`;
+      return `Maximum ${erro.requiredLength} characters allowed.`;
     }
 
     if (control.hasError('minlength')) {
       const erro = control.getError('minlength');
-      return `Mínimo de ${erro.requiredLength} caracteres exigidos.`;
+      return `Minimum ${erro.requiredLength} characters required.`;
     }
 
     return undefined;
   }
 
   defineToolTipBtnSave(): string | null {
-    return !this.form.valid ? "O formulário está inválido." : null;
+    return !this.form.valid ? "The form is invalid." : null;
   }
 
   onRegister(): void {
+    this.isSaving = true;
     if (this.form.valid) {
       this.userService.createUser(this.form.value).subscribe({
         next: (userResponse) => {
-          this.toastrService.success('Conta criada com sucesso!', 'Sucesso!');
+          this.toastrService.success('Account created successfully!', 'Success!');
           this.activeModal.close(); 
         },
         error: (error) => {
-          this.toastrService.error('Ocorreu um erro ao criar a conta.', "Erro");
+          this.toastrService.error('An error occurred while creating the account.', "Error");
+        },
+        complete: () => {
+          this.isSaving = false;
         }
       });
     }
