@@ -36,7 +36,8 @@
           <th scope="col">Title</th>
           <th scope="col">Category</th>
           <th scope="col">Price</th>
-          <th scope="col">Actions</th> </tr>
+          <th scope="col">Actions</th>
+        </tr>
       </thead>
       <tbody>
         @for (product of products; track $index) {
@@ -53,7 +54,7 @@
               <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
                 <button ngbDropdownItem (click)="viewProduct(product)">View</button>
                 <button ngbDropdownItem (click)="editProduct(product)">Edit</button>
-                <button ngbDropdownItem (click)="deleteProduct(product.id)">Delete</button>
+                <button ngbDropdownItem (click)="openDeleteModal(product)">Delete</button>
               </div>
             </div>
           </td>
@@ -72,7 +73,8 @@
     <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body text-center">
-    <img [src]="selectedProduct.image" class="img-fluid mb-3" alt="{{ selectedProduct.title }}" style="max-height: 250px;">
+    <img [src]="selectedProduct.image" class="img-fluid mb-3" alt="{{ selectedProduct.title }}"
+      style="max-height: 250px;">
     <p>{{ selectedProduct.description }}</p>
     <hr>
     <div class="d-flex justify-content-between">
@@ -88,4 +90,28 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
   </div>
   }
+</ng-template>
+
+<ng-template #deleteConfirmationModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modal-basic-title">Confirm Deletion</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete the product: <strong class="text-danger">{{ selectedProduct?.title }}</strong>?
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">No</button>
+    @if (!isDeleting) {
+    <button type="button" class="btn btn-danger" (click)="deleteProduct(selectedProduct?.id)">
+      Yes, Delete
+    </button>
+    } @else {
+    <button class="btn btn-danger" type="button" disabled>
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Deleting...
+    </button>
+    }
+  </div>
 </ng-template>

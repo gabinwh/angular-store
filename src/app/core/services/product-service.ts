@@ -19,4 +19,8 @@ export class ProductService {
   getProductById(id: number): Observable<ProductResponse> {
     return this.httpService.get<ProductResponse>(`${this.apiUrl}/${id}`)
   }
+
+  deleteProductById(id: number): Observable<void> {
+    return this.httpService.delete<void>(`${this.apiUrl}/${id}`)
+  }
 }

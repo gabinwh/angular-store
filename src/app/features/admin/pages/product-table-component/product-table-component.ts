@@ -13,10 +13,12 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ProductTableComponent {
   products: ProductResponse[] = [];
   isLoading: boolean = true;
+  isDeleting: boolean = false;
   hasError: boolean = false;
   selectedProduct: ProductResponse | null = null;
 
   @ViewChild('viewProductModal') viewProductModal!: TemplateRef<any>;
+  @ViewChild('deleteConfirmationModal') deleteConfirmationModal!: TemplateRef<any>;
 
   constructor(
     private productService: ProductService,
@@ -33,14 +35,14 @@ export class ProductTableComponent {
     this.productService.getAllProducts().subscribe({
       next: (response) => {
         this.products = response;
-        this.isLoading = false;
         this.toastrService.success("Products data loaded successfully!");
       },
       error: (error) => {
-        this.isLoading = false;
         this.hasError = true;
         this.toastrService.error("Failed to load products.", "Error");
-        console.error('There was an error fetching the products:', error);
+      },
+      complete: () => {
+        this.isLoading = false;
       }
     });
   }
@@ -49,7 +51,7 @@ export class ProductTableComponent {
     this.toastrService.info('Add Product functionality is not yet implemented.');
   }
 
-  viewProduct(product: any): void {
+  viewProduct(product: ProductResponse): void {
     this.selectedProduct = product;
     this.modalService.open(this.viewProductModal, { size: 'lg' });
   }
@@ -58,7 +60,26 @@ export class ProductTableComponent {
     this.toastrService.info(`Editing product: ${product.title}`);
   }
 
-  deleteProduct(productId: number): void {
-    this.toastrService.warning(`Deleting product with ID: ${productId}`);
+  openDeleteModal(product: ProductResponse): void {
+    this.selectedProduct = product;
+    this.modalService.open(this.deleteConfirmationModal, { size: 'md' });
+  }
+
+  deleteProduct(productId: number | undefined | null): void {
+    if (productId) {
+      this.isDeleting = true;
+      this.productService.deleteProductById(productId).subscribe({
+        next: () => {
+          this.toastrService.success("Products deleted successfully!");
+          this.modalService.dismissAll();
+        },
+        error: (error) => {
+          this.toastrService.error("Failed to delete the product.", "Error");
+        },
+        complete: () => {
+          this.isDeleting = false;
+        }
+      });
+    }
   }
 }
