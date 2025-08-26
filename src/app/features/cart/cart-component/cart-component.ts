@@ -76,7 +76,6 @@ export class CartComponent {
     this.getCartProducts();
   }
 
-  // Novo método para aumentar a quantidade
   increaseQuantity(product: ProductResponse): void {
     this.cartService.increaseQuantity(product);
     this.toastrService.info('Quantidade do item aumentada!', 'Info');

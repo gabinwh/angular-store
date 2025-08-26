@@ -8,7 +8,6 @@ import { CartItem, ProductResponse } from '../../shared/utils/models';
   providedIn: 'root'
 })
 export class CartService {
-  private httpService = inject(HttpClient);
   private cartKey = 'local_cart';
 
   public cartItems = signal<CartItem[]>(this.getCartFromLocalStorage());

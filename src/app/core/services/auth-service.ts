@@ -53,7 +53,6 @@ export class AuthService {
 
     try {
       const decodedToken: any = jwtDecode(token);
-      // Assumindo que a propriedade no token é 'username'
       return decodedToken.user || null;
     } catch (error) {
       console.error("Failed to decode JWT token:", error);
