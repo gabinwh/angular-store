@@ -70,7 +70,7 @@ export class ProductTableComponent {
       this.isDeleting = true;
       this.productService.deleteProductById(productId).subscribe({
         next: () => {
-          this.toastrService.success("Products deleted successfully!");
+          this.toastrService.success("Product deleted successfully!");
           this.modalService.dismissAll();
         },
         error: (error) => {

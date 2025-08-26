@@ -15,7 +15,6 @@ export class CartService {
   constructor() {
     effect(() => {
       this.saveCartToLocalStorage(this.cartItems());
-      console.log('update cart', this.cartItems());
     });
   }
 
