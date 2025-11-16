@@ -9,7 +9,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { HttpClientModule } from '@angular/common/http';
 import { AdminRoutingModule } from './admin-routing.module';
 
 
@@ -20,7 +19,6 @@ import { AdminRoutingModule } from './admin-routing.module';
     CreateEditProudct
   ],
   imports: [
-    HttpClientModule,
     CommonModule,
     NgbDropdownModule,
     MatFormFieldModule,
