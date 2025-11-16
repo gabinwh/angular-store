@@ -6,7 +6,7 @@ import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
-import { CartModule } from './features/cart/cart-module';
+import { CartModule } from './features/cart/cart.module';
 import { AuthModule } from './features/auth/auth-module';
 import { ProductModule } from './features/product/product-module';
 import { HomeModule } from './features/home/home-module';

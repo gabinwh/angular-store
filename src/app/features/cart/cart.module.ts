@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
+import { CartRoutingModule } from './cart-routing.module';
 import { CartComponent } from './cart-component/cart-component';
-import { RouterModule } from '@angular/router';
-
 
 @NgModule({
   declarations: [
@@ -11,7 +11,8 @@ import { RouterModule } from '@angular/router';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    HttpClientModule,
+    CartRoutingModule
   ]
 })
 export class CartModule { }

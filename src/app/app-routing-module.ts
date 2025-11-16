@@ -15,7 +15,13 @@ const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
 
-  { path: 'cart', component: CartComponent, canActivate: [authGuard] },
+  // { path: 'cart', component: CartComponent, canActivate: [authGuard] },
+
+  {
+    path: 'cart',
+    canActivate: [authGuard],
+    loadChildren: () => import('../app/features/cart/cart.module').then(m => m.CartModule)
+  },
 
   {
     path: 'admin',
