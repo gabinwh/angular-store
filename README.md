@@ -1,59 +1,41 @@
-# MyAngularStore
+# Fake Store - Uma Loja de Exemplo com Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.
+Este projeto é uma aplicação web de e-commerce construída com **Angular**. Ela simula uma loja de eletrônicos, onde é possível visualizar produtos, adicioná-los ao carrinho.
 
-## Development server
+## Funcionalidades
 
-To start a local development server, run:
+  * **Listagem de Produtos**: Exibe uma lista de produtos consumindo a [Fake Store API](https://fakestoreapi.com/).
+  * **Detalhes do Produto**: Cada produto tem sua própria página de detalhes.
+  * **Carrinho de Compras**: Um carrinho funcional onde você pode adicionar, remover e ajustar a quantidade de produtos.
+  * **Persistência do Carrinho**: O estado do carrinho é persistido no **`localStorage`**, garantindo que os itens não se percam ao recarregar a página.
+
+## Principais Tecnologias Utilizadas
+
+  * **Angular**: Framework principal para a construção da aplicação front-end.
+  * **RxJS**: Utilizado para gerenciar fluxos de dados assíncronos.
+  * **Angular Material & Bootstrap**: Usados para estilização e componentes de UI.
+  * **[Fake Store API](https://fakestoreapi.com/)**: Uma API RESTful pública e gratuita utilizada para simular a listagem de produtos e autenticação.
+
+-----
+
+## Como Iniciar a Aplicação
+
+Siga os passos abaixo para rodar a aplicação em seu ambiente local.
+
+### 1\. Instalar as Dependências
+
+Primeiro, navegue até a pasta do projeto no seu terminal e instale todas as dependências necessárias.
+
+```bash
+npm install
+```
+
+### 2\. Executar a Aplicação
+
+Depois que a instalação estiver completa, inicie o servidor de desenvolvimento.
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+A aplicação estará disponível em `http://localhost:4200/`.
