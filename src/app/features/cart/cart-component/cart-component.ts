@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
+import { catchError, finalize, forkJoin, map, of } from 'rxjs';
 import { CartService } from '../../../core/services/cart-service';
 import { ProductService } from '../../../core/services/product-service';
 import { CartProduct, ProductResponse } from '../../../shared/utils/models';

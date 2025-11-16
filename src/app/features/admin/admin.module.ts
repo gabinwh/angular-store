@@ -9,6 +9,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { HttpClientModule } from '@angular/common/http';
+import { AdminRoutingModule } from './admin-routing.module';
 
 
 @NgModule({
@@ -18,12 +20,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     CreateEditProudct
   ],
   imports: [
+    HttpClientModule,
     CommonModule,
     NgbDropdownModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    AdminRoutingModule
   ]
 })
 export class AdminModule { }

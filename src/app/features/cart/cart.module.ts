@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { CartRoutingModule } from './cart-routing.module';
 import { CartComponent } from './cart-component/cart-component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { CartComponent } from './cart-component/cart-component';
   imports: [
     CommonModule,
     HttpClientModule,
-    CartRoutingModule
+    CartRoutingModule,
+    RouterModule
   ]
 })
 export class CartModule { }
