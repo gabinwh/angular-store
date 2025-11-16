@@ -17,7 +17,9 @@ import { CoreModule } from './core/core.module';
     CoreModule,
     BrowserModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot({
+      easeTime: 150
+    })
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
