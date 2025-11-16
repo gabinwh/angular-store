@@ -5,8 +5,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { App } from './app';
-import { SharedModule } from './shared/shared-module';
 import { AuthInterceptor } from './core/interceptors/auth-interceptor';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
@@ -14,7 +14,7 @@ import { AuthInterceptor } from './core/interceptors/auth-interceptor';
   ],
   imports: [
     AppRoutingModule,
-    SharedModule,
+    CoreModule,
     BrowserModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot()

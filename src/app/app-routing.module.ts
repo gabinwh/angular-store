@@ -6,9 +6,15 @@ import { LoginComponent } from './features/auth/login-component/login-component'
 import { authGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
+  {
+    path: 'login',
+    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+  },
 
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'home',
+    loadChildren: () => import('./features/home/home.module').then(m => m.HomeModule)
+  },
 
   {
     path: 'product/:id',
