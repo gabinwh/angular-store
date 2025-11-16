@@ -1,11 +1,12 @@
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Subscription, switchMap } from 'rxjs';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { catchError, map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { ProductService } from '../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { ProductResponse } from '../../../shared/utils/models';
 import { AuthService } from '../../../core/services/auth-service';
 import { CartService } from '../../../core/services/cart-service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-product-detail-component',
@@ -15,63 +16,61 @@ import { CartService } from '../../../core/services/cart-service';
 })
 export class ProductDetailComponent {
 
-  product: ProductResponse = {} as ProductResponse;
-  isProductLoading: boolean = false;
-  hasError: boolean = false;
-  productId: number | null = null;
-  private routeSub: Subscription | undefined;
+  private routeActivated = inject(ActivatedRoute);
+  private productService = inject(ProductService);
+  private authService = inject(AuthService);
+  private cartService = inject(CartService);
+  private router = inject(Router);
+  private toastrService = inject(ToastrService);
+  private destroyRef = inject(DestroyRef);
 
-  constructor(
-    private routeActivated: ActivatedRoute,
-    private productService: ProductService,
-    private authService: AuthService,
-    private cartService: CartService,
-    private router: Router,
-    private toastrService: ToastrService
-  ) { }
+  data$: Observable<{ loading: boolean, error: boolean, product: ProductResponse | null }> = this.routeActivated.paramMap.pipe(
+    map(params => Number(params.get('id'))),
+    switchMap(id =>
+      this.productService.getProductById(id).pipe(
+        map(product => ({
+          loading: false,
+          error: false,
+          product: product
+        })),
+        catchError(() => {
+          this.toastrService.error("Unable to load product!");
+          return of({
+            loading: false,
+            error: true,
+            product: null
+          });
+        }),
+        startWith({
+          loading: true,
+          error: false,
+          product: null
+        })
+      )
+    )
+  );
 
   ngOnInit(): void {
-    this.isProductLoading = true;
-    this.hasError = false;
-    this.routeSub = this.routeActivated.paramMap.subscribe((params: ParamMap) => {
-      this.productId = Number(params.get('id'));
-      if (this.productId) {
-
-        this.productService.getProductById(this.productId).subscribe({
-          next: data => {
-            this.product = data;
-            this.toastrService.success("Product data loaded successfully!");
-          },
-          error: error => {
-            this.toastrService.error("Unable to load credentials!");
-            this.hasError = true;
-          },
-          complete: () => {
-            this.isProductLoading = false;
+    this.data$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: state => {
+          if (!state.error && !state.loading) {
+            this.toastrService.success("Product loaded successfully!");
           }
-        });
-      } else {
-        this.hasError = true;
-        this.toastrService.error("Error loading product data!");
-      }
-    });
+        }
+      });
   }
 
-  addToCart(): void {
+  addToCart(product: ProductResponse): void {
     if (this.authService.isLoggedIn()) {
-      this.cartService.addToCart(this.product);
+      this.cartService.addToCart(product); ''
       this.toastrService.success('You have added this item to your cart.');
     } else {
       this.toastrService.info('You must be logged in to add products to your cart.', 'Attention');
       this.router.navigate(['/login'], {
         queryParams: { returnUrl: this.router.url }
       });
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.routeSub) {
-      this.routeSub.unsubscribe();
     }
   }
 }

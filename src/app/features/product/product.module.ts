@@ -11,7 +11,7 @@ import { ProductRoutingModule } from './product-routing.module';
   ],
   imports: [
     CommonModule,
-    ProductRoutingModule
-  ]
+    ProductRoutingModule,
+]
 })
 export class ProductModule { }
