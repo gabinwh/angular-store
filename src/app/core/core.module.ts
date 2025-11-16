@@ -1,20 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from './services/auth-service';
-import { CartService } from './services/cart-service';
-import { ProductService } from './services/product-service';
-import { UserService } from './services/user-service';
 import { NavbarComponent } from './components/navbar-component/navbar-component';
 import { RouterModule } from '@angular/router';
+import { FooterComponent } from './components/footer-component/footer-component';
 
 @NgModule({
-  declarations: [NavbarComponent],
+  declarations: [NavbarComponent, FooterComponent],
   imports: [
     CommonModule,
     RouterModule
   ],
   exports: [
-    NavbarComponent
+    NavbarComponent,
+    FooterComponent
   ]
 })
 export class CoreModule { }
