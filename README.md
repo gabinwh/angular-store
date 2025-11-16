@@ -1,6 +1,6 @@
 # Fake Store - Uma Loja de Exemplo com Angular
 
-Este projeto é uma aplicação web de e-commerce construída com **Angular**. Ela simula uma loja de eletrônicos, onde é possível visualizar produtos, adicioná-los ao carrinho.
+Este projeto é uma aplicação web de e-commerce construída com **Angular**. Ela simula uma loja, onde é possível visualizar produtos, adicioná-los ao carrinho.
 
 ## Funcionalidades
 
