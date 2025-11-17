@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ProductTableComponent } from './pages/product-table-component/product-table-component';
 import { AdminHomeComponent } from './pages/admin-home-component/admin-home-component';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbSlide } from '@ng-bootstrap/ng-bootstrap';
 import { CreateEditProudct } from './pages/modals/create-edit-proudct/create-edit-proudct';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -25,7 +25,8 @@ import { AdminRoutingModule } from './admin-routing.module';
     MatInputModule,
     ReactiveFormsModule,
     MatTooltipModule,
-    AdminRoutingModule
-  ]
+    AdminRoutingModule,
+    NgbSlide
+]
 })
 export class AdminModule { }

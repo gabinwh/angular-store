@@ -1,4 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  ViewChild,
+  DestroyRef,
+} from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,38 +12,39 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserModal } from '../create-user-modal/create-user-modal';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../../core/services/user-service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login-component',
   standalone: false,
   templateUrl: './login-component.html',
-  styleUrl: './login-component.scss'
+  styleUrl: './login-component.scss',
 })
 export class LoginComponent {
+  @ViewChild('credentialsModalContent') credentialsModalContent:
+    | ElementRef
+    | undefined;
 
-  @ViewChild('credentialsModalContent') credentialsModalContent: ElementRef | undefined;
-
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private userService: UserService,
-    private router: Router,
-    private modalService: NgbModal,
-    private toastrService: ToastrService,
-    private routeActivated: ActivatedRoute
-  ) { }
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
+  private router = inject(Router);
+  private modalService = inject(NgbModal);
+  private toastrService = inject(ToastrService);
+  private routeActivated = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   form!: FormGroup;
   errorMessage: string | null = null;
   isCredentialsLoading: boolean = false;
-  credentials: any = []
+  credentials: any = [];
   private returnUrl: string | null = null;
 
   ngOnInit() {
-
     this.initForm();
     this.form.markAllAsTouched();
-    this.returnUrl = this.routeActivated.snapshot.queryParamMap.get('returnUrl');
+    this.returnUrl =
+      this.routeActivated.snapshot.queryParamMap.get('returnUrl');
   }
 
   openCredentialsModal(): void {
@@ -45,24 +52,38 @@ export class LoginComponent {
       this.isCredentialsLoading = true;
       this.modalService.open(this.credentialsModalContent);
       this.userService.getAllUsers().subscribe({
-        next: data => {
+        next: (data) => {
           this.credentials = data;
-          this.toastrService.success("Credentials loaded successfully!");
+          this.toastrService.success('Credentials loaded successfully!');
         },
-        error: error => {
-          this.toastrService.error("Unable to load credentials!");
+        error: (error) => {
+          this.toastrService.error('Unable to load credentials!');
         },
         complete: () => {
           this.isCredentialsLoading = false;
-        }
+        },
       });
     }
   }
 
   private initForm(): void {
     this.form = this.fb.group({
-      username: [null, [Validators.required, Validators.maxLength(20), Validators.minLength(1)]],
-      password: [null, [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
+      username: [
+        null,
+        [
+          Validators.required,
+          Validators.maxLength(20),
+          Validators.minLength(1),
+        ],
+      ],
+      password: [
+        null,
+        [
+          Validators.required,
+          Validators.maxLength(20),
+          Validators.minLength(3),
+        ],
+      ],
     });
   }
 
@@ -88,20 +109,24 @@ export class LoginComponent {
 
   onLogin(): void {
     if (this.form.valid) {
-      this.authService.login(this.form.value).subscribe({
-        next: data => {
-          if (this.returnUrl) {
-            this.router.navigateByUrl(this.returnUrl);
-          } else {
-            this.router.navigate(['/home']);
-          }
-          this.toastrService.success("Login successful!");
-        },
-        error: error => {
-          this.errorMessage = 'Invalid username or password. Please try again.';
-          this.toastrService.error("Unable to login!");
-        }
-      });
+      this.authService
+        .login(this.form.value)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (data) => {
+            if (this.returnUrl) {
+              this.router.navigateByUrl(this.returnUrl);
+            } else {
+              this.router.navigate(['/home']);
+            }
+            this.toastrService.success('Login successful!');
+          },
+          error: (error) => {
+            this.errorMessage =
+              'Invalid username or password. Please try again.';
+            this.toastrService.error('Unable to login!');
+          },
+        });
     }
   }
 
@@ -110,7 +135,7 @@ export class LoginComponent {
       size: 'lg',
       centered: true,
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     });
   }
 }

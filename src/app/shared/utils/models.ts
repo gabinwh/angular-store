@@ -47,3 +47,9 @@ export type StateProductResponse = {
   error: boolean;
   product: ProductResponse | null;
 };
+
+export type StateDashboardResponse = {
+  loading: boolean;
+  error: boolean;
+  count: number;
+};

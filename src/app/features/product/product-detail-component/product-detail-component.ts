@@ -1,14 +1,6 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  catchError,
-  map,
-  Observable,
-  of,
-  startWith,
-  Subscription,
-  switchMap,
-} from 'rxjs';
+import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { ProductService } from '../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
 import {
@@ -17,7 +9,6 @@ import {
 } from '../../../shared/utils/models';
 import { AuthService } from '../../../core/services/auth-service';
 import { CartService } from '../../../core/services/cart-service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-product-detail-component',
@@ -65,7 +56,6 @@ export class ProductDetailComponent {
   addToCart(product: ProductResponse): void {
     if (this.authService.isLoggedIn()) {
       this.cartService.addToCart(product);
-      ('');
       this.toastrService.success('You have added this item to your cart.');
     } else {
       this.toastrService.info(

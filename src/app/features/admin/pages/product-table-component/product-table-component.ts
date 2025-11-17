@@ -1,51 +1,66 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { ProductService } from '../../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
-import { ProductResponse } from '../../../../shared/utils/models';
+import {
+  ProductResponse,
+  StateProductsResponse,
+} from '../../../../shared/utils/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateEditProudct } from '../modals/create-edit-proudct/create-edit-proudct';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, map, Observable, of, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-product-table-component',
   standalone: false,
   templateUrl: './product-table-component.html',
-  styleUrl: './product-table-component.scss'
+  styleUrl: './product-table-component.scss',
 })
 export class ProductTableComponent {
-  products: ProductResponse[] = [];
-  isLoading: boolean = true;
   isDeleting: boolean = false;
-  hasError: boolean = false;
   selectedProduct: ProductResponse | null = null;
 
   @ViewChild('viewProductModal') viewProductModal!: TemplateRef<any>;
-  @ViewChild('deleteConfirmationModal') deleteConfirmationModal!: TemplateRef<any>;
+  @ViewChild('deleteConfirmationModal')
+  deleteConfirmationModal!: TemplateRef<any>;
 
-  constructor(
-    private productService: ProductService,
-    private toastrService: ToastrService,
-    private modalService: NgbModal
-  ) { }
+  private productService = inject(ProductService);
+  private toastrService = inject(ToastrService);
+  private modalService = inject(NgbModal);
+  private destroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
-    this.getAllProducts();
-  }
+  state$ = this.fetchProducts();
 
-  getAllProducts(): void {
-    this.isLoading = true;
-    this.productService.getAllProducts().subscribe({
-      next: (response) => {
-        this.products = response;
-        this.toastrService.success("Products data loaded successfully!");
-      },
-      error: (error) => {
-        this.hasError = true;
-        this.toastrService.error("Failed to load products.", "Error");
-      },
-      complete: () => {
-        this.isLoading = false;
-      }
-    });
+  private fetchProducts(): Observable<StateProductsResponse> {
+    return this.productService.getAllProducts().pipe(
+      map((products) => {
+        this.toastrService.success('Products data loaded successfully!');
+        return {
+          loading: false,
+          error: false,
+          products,
+        };
+      }),
+      catchError(() => {
+        this.toastrService.error('Failed to load products.', 'Error');
+        return of({
+          loading: false,
+          error: true,
+          products: [],
+        });
+      }),
+      startWith({
+        loading: true,
+        error: false,
+        products: [],
+      })
+    );
   }
 
   openAddProductModal(): void {
@@ -79,18 +94,21 @@ export class ProductTableComponent {
   deleteProduct(productId: number | undefined | null): void {
     if (productId) {
       this.isDeleting = true;
-      this.productService.deleteProductById(productId).subscribe({
-        next: () => {
-          this.toastrService.success("Product deleted successfully!");
-          this.modalService.dismissAll();
-        },
-        error: (error) => {
-          this.toastrService.error("Failed to delete the product.", "Error");
-        },
-        complete: () => {
-          this.isDeleting = false;
-        }
-      });
+      this.productService
+        .deleteProductById(productId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.toastrService.success('Product deleted successfully!');
+            this.modalService.dismissAll();
+          },
+          error: (error) => {
+            this.toastrService.error('Failed to delete the product.', 'Error');
+          },
+          complete: () => {
+            this.isDeleting = false;
+          },
+        });
     }
   }
 }

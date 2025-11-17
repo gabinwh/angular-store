@@ -1,37 +1,53 @@
+@let productState = (productsState$ | async);
+@let userState = (usersState$ | async);
+
 <div class="container mt-5">
-    <h2 class="mb-4">Admin Dashboard</h2>
+  <h2 class="mb-4">Admin Dashboard</h2>
 
-    @if (isLoading) {
-    <div class="d-flex justify-content-center">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    } @else {
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card text-center bg-secondary text-white shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Total Users</h5>
-                    <h1 class="card-text display-4 fw-bold">{{ userCount }}</h1>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card text-center bg-primary text-white shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Total Products</h5>
-                    <h1 class="card-text display-4 fw-bold">{{ productCount }}</h1>
-                </div>
-            </div>
+  <div class="row">
+    @if (userState) {
+      <div class="col-md-6 mb-4">
+        <div class="card text-center bg-secondary text-white shadow-sm">
+          <div class="card-body">
+            @if (userState.loading) {
+              <ng-container *ngTemplateOutlet="loading"></ng-container>
+            } @else {
+              <h5 class="card-title">Total Users</h5>
+              <h1 class="card-text display-4 fw-bold">{{ userState.count }}</h1>
+            }
+          </div>
         </div>
-    </div>
+      </div>
     }
+    @if (productState) {
+      <div class="col-md-6 mb-4">
+        <div class="card text-center bg-secondary text-white shadow-sm">
+          <div class="card-body">
+            @if (productState.loading) {
+              <ng-container *ngTemplateOutlet="loading"></ng-container>
+            } @else {
+              <h5 class="card-title">Total Products</h5>
+            <h1 class="card-text display-4 fw-bold">{{ productState?.count }}</h1>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 
-    <div class="mt-4">
-        <button class="btn btn-primary btn-lg w-100" (click)="goToProductsTable()">
-            View Products Table
-        </button>
-    </div>
+
+  <div class="mt-4">
+    <button class="btn btn-primary btn-lg w-100" (click)="goToProductsTable()">
+      View Products Table
+    </button>
+  </div>
 </div>
+
+<ng-template #loading>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

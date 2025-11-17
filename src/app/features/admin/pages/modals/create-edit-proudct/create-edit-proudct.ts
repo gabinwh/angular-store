@@ -1,29 +1,28 @@
-import { Component, Input } from '@angular/core';
+import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../../../../../core/services/product-service';
 import { Product, ProductResponse } from '../../../../../shared/utils/models';
 import { ToastrService } from 'ngx-toastr';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-create-edit-proudct',
   standalone: false,
   templateUrl: './create-edit-proudct.html',
-  styleUrl: './create-edit-proudct.scss'
+  styleUrl: './create-edit-proudct.scss',
 })
 export class CreateEditProudct {
-
   @Input() productToEdit: ProductResponse | null = null;
 
   form!: FormGroup;
   isSending: boolean = false;
 
-  constructor(
-    public activeModal: NgbActiveModal,
-    private fb: FormBuilder,
-    private productService: ProductService,
-    private toastrService: ToastrService
-  ) { }
+  private destroyRef = inject(DestroyRef);
+  protected activeModal = inject(NgbActiveModal);
+  private fb = inject(FormBuilder);
+  private productService = inject(ProductService);
+  private toastrService = inject(ToastrService);
 
   ngOnInit(): void {
     this.createForm();
@@ -39,7 +38,7 @@ export class CreateEditProudct {
       price: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', Validators.required],
       image: ['', Validators.required],
-      category: ['', Validators.required]
+      category: ['', Validators.required],
     });
   }
 
@@ -72,37 +71,40 @@ export class CreateEditProudct {
         price: this.form.get('price')?.value,
         image: this.form.get('image')?.value,
         description: this.form.get('description')?.value,
-
-      }
+      };
 
       if (this.productToEdit && this.productToEdit.id) {
-
-        this.productService.updateProduct(this.productToEdit.id, body).subscribe({
-          next: () => {
-            this.toastrService.success("Product updated successfully!");
-            this.activeModal.close();
-          },
-          error: () => {
-            this.toastrService.error("Failed to update the product.");
-          },
-          complete: () => {
-            this.isSending = false;
-          }
-        });
+        this.productService
+          .updateProduct(this.productToEdit.id, body)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              this.toastrService.success('Product updated successfully!');
+              this.activeModal.close();
+            },
+            error: () => {
+              this.toastrService.error('Failed to update the product.');
+            },
+            complete: () => {
+              this.isSending = false;
+            },
+          });
       } else {
-
-        this.productService.createProduct(body).subscribe({
-          next: () => {
-            this.toastrService.success("Product created successfully!");
-            this.activeModal.close();
-          },
-          error: () => {
-            this.toastrService.error("Failed to create the product.");
-          },
-          complete: () => {
-            this.isSending = false;
-          }
-        });
+        this.productService
+          .createProduct(body)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              this.toastrService.success('Product created successfully!');
+              this.activeModal.close();
+            },
+            error: () => {
+              this.toastrService.error('Failed to create the product.');
+            },
+            complete: () => {
+              this.isSending = false;
+            },
+          });
       }
     } else {
       this.form.markAllAsTouched();
