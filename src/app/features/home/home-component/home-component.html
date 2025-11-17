@@ -1,11 +1,17 @@
-@if (isProductsLoading) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+@let state = (state$ | async); @if (state) { @if (state.loading) {
+<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+} @else if (state.error) {
+<div class="alert alert-danger" role="alert">
+  Products not found or an error occurred.
+</div>
 } @else {
-  <div class="row m-3">
-    @for (product of products; track product.id) {
-      <div class="col-12 col-md-6 col-lg-4 mb-4">
-        <app-product-card-component [product]="product"></app-product-card-component>
-      </div>
-    }
+<div class="row m-3">
+  @for (product of state.products; track product.id) {
+  <div class="col-12 col-md-6 col-lg-4 mb-4">
+    <app-product-card-component
+      [product]="product"
+    ></app-product-card-component>
   </div>
-}
+  }
+</div>
+} }
