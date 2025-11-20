@@ -6,7 +6,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { App } from './app';
 import { AuthInterceptor } from './core/interceptors/auth-interceptor';
-import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
@@ -14,7 +13,6 @@ import { CoreModule } from './core/core.module';
   ],
   imports: [
     AppRoutingModule,
-    CoreModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
