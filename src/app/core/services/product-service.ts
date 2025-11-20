@@ -8,7 +8,8 @@ import { Product, ProductResponse } from '../../shared/utils/models';
 })
 export class ProductService {
 
-  private httpService = inject(HttpClient);
+  constructor(private httpService: HttpClient) { }
+
 
   private apiUrl = 'https://fakestoreapi.com/products';
 

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
@@ -10,9 +10,11 @@ import { CartService } from './cart-service';
 })
 export class AuthService {
 
-  private httpService = inject(HttpClient);
-  private routerService = inject(Router);
-  private cartService = inject(CartService)
+  constructor(
+    private httpService: HttpClient,
+    private routerService: Router,
+    private cartService: CartService,
+  ) { }
 
   private apiUrl = 'https://fakestoreapi.com/auth/login';
   private tokenKey = 'auth_token';
@@ -31,7 +33,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
 
-    this.cartService.clearCart(); 
+    this.cartService.clearCart();
 
     this.isLoggedInSignal.set(false);
     this.routerService.navigate(['/login']);

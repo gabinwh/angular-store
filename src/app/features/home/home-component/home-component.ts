@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; // Adicione OnInit
 import { ProductService } from '../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
@@ -10,11 +10,17 @@ import { StateProductsResponse } from '../../../shared/utils/models';
   templateUrl: './home-component.html',
   styleUrl: './home-component.scss',
 })
-export class HomeComponent {
-  private productService = inject(ProductService);
-  private toastrService = inject(ToastrService);
+export class HomeComponent implements OnInit { // Implemente OnInit
+  state$!: Observable<StateProductsResponse>;
 
-  state$ = this.fetchProducts();
+  constructor(
+    private productService: ProductService,
+    private toastrService: ToastrService
+  ) { }
+
+  ngOnInit(): void {
+    this.state$ = this.fetchProducts(); // Inicializa AQUI
+  }
 
   private fetchProducts(): Observable<StateProductsResponse> {
     return this.productService.getAllProducts().pipe(
