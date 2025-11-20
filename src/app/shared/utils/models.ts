@@ -53,3 +53,11 @@ export type StateDashboardResponse = {
   error: boolean;
   count: number;
 };
+
+
+export type CartState = {
+  loading: boolean;
+  error: boolean;
+  cartProducts: CartProduct[];
+  totalPrice: number;
+}

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, finalize, forkJoin, map, of } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, forkJoin, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { CartService } from '../../../core/services/cart-service';
 import { ProductService } from '../../../core/services/product-service';
-import { CartProduct, ProductResponse } from '../../../shared/utils/models';
+import { CartProduct, CartState, ProductResponse } from '../../../shared/utils/models';
 
 @Component({
   selector: 'app-cart-component',
@@ -12,9 +12,6 @@ import { CartProduct, ProductResponse } from '../../../shared/utils/models';
   styleUrl: './cart-component.scss'
 })
 export class CartComponent {
-  cartProducts: CartProduct[] = [];
-  totalPrice: number = 0;
-  isLoading: boolean = true;
 
   constructor(
     private toastrService: ToastrService,
@@ -22,67 +19,86 @@ export class CartComponent {
     private productService: ProductService
   ) { }
 
+  private refreshCartSubject = new BehaviorSubject<void>(undefined);
+
+  cartState$!: Observable<CartState>;
+
   ngOnInit(): void {
-    this.getCartProducts();
+    this.cartState$ = this.fetchCartState();
   }
 
-  getCartProducts(): void {
-    this.isLoading = true;
+  private fetchCartState(): Observable<CartState> {
+    return this.refreshCartSubject.pipe(
+      startWith(undefined),
+      switchMap(() => {
+        const productsInCart = this.cartService.cartItems();
 
-    const productsInCart = this.cartService.cartItems();
+        if (productsInCart.length === 0) {
+          return of({
+            loading: false,
+            error: false,
+            cartProducts: [],
+            totalPrice: 0,
+          } as CartState);
+        }
 
-    if (productsInCart.length === 0) {
-      this.cartProducts = [];
-      this.isLoading = false;
-      this.calculateTotalPrice();
-      return;
-    }
+        const productRequests = productsInCart.map(item =>
+          this.productService.getProductById(item.productId).pipe(
+            map(product => ({ ...product, quantity: item.quantity } as CartProduct))
+          )
+        );
 
-    const productRequests = productsInCart.map(item =>
-      this.productService.getProductById(item.productId)
+        return forkJoin(productRequests).pipe(
+          map(products => {
+            return {
+              loading: false,
+              error: false,
+              cartProducts: products,
+              totalPrice: this.calculateTotalPrice(products),
+            };
+          }),
+          catchError(error => {
+            this.toastrService.error('Failed to load product data.', 'Error');
+            return of({
+              loading: false,
+              error: true,
+              cartProducts: [],
+              totalPrice: 0,
+            } as CartState);
+          }),
+          startWith({
+            loading: true,
+            error: false,
+            cartProducts: [],
+            totalPrice: 0,
+          } as CartState)
+        );
+      })
     );
-
-    forkJoin(productRequests).pipe(
-      map(fetchedProducts => {
-        return fetchedProducts.map((product, index) => ({
-          ...product,
-          quantity: productsInCart[index].quantity
-        }));
-      }),
-      catchError(error => {
-        this.toastrService.error('Failed to load product data.', 'Error');
-        return of([]);
-      }),
-      finalize(() => this.isLoading = false)
-    ).subscribe(products => {
-      this.cartProducts = products;
-      this.calculateTotalPrice();
-    });
   }
-
-  calculateTotalPrice(): void {
-    this.totalPrice = this.cartProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  private calculateTotalPrice(products: CartProduct[]): number {
+    return products.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
 
   removeFromCart(productId: number): void {
     this.cartService.removeFromCart(productId);
     this.toastrService.info('Item removed from cart!', 'Info');
-    this.getCartProducts();
+    this.refreshCartSubject.next();
   }
 
   decreaseQuantity(productId: number): void {
     this.cartService.decreaseQuantity(productId);
     this.toastrService.info('Item quantity decreased!', 'Info');
-    this.getCartProducts();
+    this.refreshCartSubject.next();
   }
 
   increaseQuantity(product: ProductResponse): void {
     this.cartService.increaseQuantity(product);
     this.toastrService.info('Item quantity increased!', 'Info');
-    this.getCartProducts();
+    this.refreshCartSubject.next();
   }
 
   onCheckout(): void {
-    this.toastrService.info("Functionality under development.", 'Info')
+    this.toastrService.info("Functionality under development.", 'Info');
   }
 }

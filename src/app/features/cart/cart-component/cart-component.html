@@ -1,74 +1,113 @@
 <div class="container mt-5">
-    <h2 class="mb-4">Shopping Cart</h2>
+  <h2>Shopping Cart</h2>
 
-    @if (isLoading) {
-    <div class="d-flex justify-content-center">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
+  @if (cartState$ | async; as state) { @if (state.loading) {
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
-    }
-
-    @if (!isLoading && cartProducts.length > 0) {
-    <div>
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card mb-3 shadow-sm" *ngFor="let product of cartProducts">
-                    <div class="row g-0">
-                        <div class="col-md-3 d-flex align-items-center justify-content-center p-3">
-                            <img [src]="product.image" class="img-fluid rounded" alt="{{ product.title }}"
-                                style="max-height: 150px; object-fit: contain;">
-                        </div>
-                        <div class="col-md-9">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a [routerLink]="['/product', product.id]">{{ product.title }}</a>
-                                </h5>
-                                <p class="card-text text-muted mb-1">{{ product.category }}</p>
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <p class="lead mb-0 text-primary fw-bold">R$ {{ product.price | number:'1.2-2' }}</p>
-                                    <div class="d-flex align-items-center">
-                                        <button class="btn btn-secondary btn-sm me-2" (click)="decreaseQuantity(product.id)">-</button>
-                                        <span class="text-muted me-2">Qty: {{ product.quantity }}</span>
-                                        <button class="btn btn-secondary btn-sm me-2" (click)="increaseQuantity(product)">+</button>
-                                        <button class="btn btn-danger btn-sm" (click)="removeFromCart(product.id)">Remove</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  </div>
+  } @else if (state.error) {
+  <div class="alert alert-danger text-center mt-5" role="alert">
+    🚨 Failed to load cart data. Please try again.
+  </div>
+  } @else if (state.cartProducts.length > 0) {
+  <div>
+    <div class="row">
+      <div class="col-lg-8">
+        <div
+          class="card mb-3 shadow-sm"
+          *ngFor="let product of state.cartProducts"
+        >
+          <div class="row g-0">
+            <div
+              class="col-md-3 d-flex align-items-center justify-content-center p-3"
+            >
+              <img
+                [src]="product.image"
+                class="img-fluid rounded"
+                alt="{{ product.title }}"
+                style="max-height: 150px; object-fit: contain"
+              />
             </div>
-
-            <div class="col-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Order Summary</h5>
-                        <hr>
-                        <p class="d-flex justify-content-between">
-                            <span>Subtotal:</span>
-                            <span class="fw-bold">R$ {{ totalPrice | number:'1.2-2' }}</span>
-                        </p>
-                        <p class="d-flex justify-content-between">
-                            <span>Shipping:</span>
-                            <span>Free</span>
-                        </p>
-                        <hr>
-                        <p class="d-flex justify-content-between fs-4 fw-bold text-primary">
-                            <span>Total:</span>
-                            <span>R$ {{ totalPrice | number:'1.2-2' }}</span>
-                        </p>
-                        <button class="btn btn-success btn-lg w-100 mt-3" (click)="onCheckout()">Proceed to Checkout</button>
-                    </div>
+            <div class="col-md-9">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <a [routerLink]="['../product', product.id]">{{
+                    product.title
+                  }}</a>
+                </h5>
+                <p class="card-text text-muted mb-1">{{ product.category }}</p>
+                <div
+                  class="d-flex justify-content-between align-items-center mt-3"
+                >
+                  <p class="lead mb-0 text-primary fw-bold">
+                    R$ {{ product.price | number : "1.2-2" }}
+                  </p>
+                  <div class="d-flex align-items-center">
+                    <button
+                      class="btn btn-secondary btn-sm me-2"
+                      (click)="decreaseQuantity(product.id)"
+                    >
+                      -
+                    </button>
+                    <span class="text-muted me-2"
+                      >Qty: {{ product.quantity }}</span
+                    >
+                    <button
+                      class="btn btn-secondary btn-sm me-2"
+                      (click)="increaseQuantity(product)"
+                    >
+                      +
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      (click)="removeFromCart(product.id)"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    }
+      </div>
 
-    @if (!isLoading && cartProducts.length === 0) {
-    <div class="alert alert-info text-center mt-5" role="alert">
-        Your cart is empty.
+      <div class="col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Order Summary</h5>
+            <hr />
+            <p class="d-flex justify-content-between">
+              <span>Subtotal:</span>
+              <span class="fw-bold"
+                >R$ {{ state.totalPrice | number : "1.2-2" }}</span
+              >
+            </p>
+            <p class="d-flex justify-content-between">
+              <span>Shipping:</span>
+              <span>Free</span>
+            </p>
+            <hr />
+            <p class="d-flex justify-content-between fs-4 fw-bold text-primary">
+              <span>Total:</span>
+              <span>R$ {{ state.totalPrice | number : "1.2-2" }}</span>
+            </p>
+            <button
+              class="btn btn-success btn-lg w-100 mt-3"
+              (click)="onCheckout()"
+            >
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    }
+  </div>
+  } @else {
+  <div class="alert alert-info text-center mt-5" role="alert">
+    Your cart is empty.
+  </div>
+  } }
 </div>
