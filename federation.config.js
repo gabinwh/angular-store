@@ -6,15 +6,11 @@ module.exports = withNativeFederation({
 
   exposes: {
     './Component': './src/app/app.ts',
+    './AppRoutingModule': './src/app/app-routing.module.ts',
   },
 
   shared: {
     ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
-    '@angular/platform-browser/animations': {
-      singleton: true,
-      strictVersion: true,
-      requiredVersion: 'auto'
-    }
   },
 
   skip: [
