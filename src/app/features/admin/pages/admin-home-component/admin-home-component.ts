@@ -14,13 +14,20 @@ import { StateDashboardResponse } from '../../../../shared/utils/models';
   styleUrl: './admin-home-component.scss',
 })
 export class AdminHomeComponent {
-  private productService = inject(ProductService);
-  private userService = inject(UserService);
-  private toastrService = inject(ToastrService);
-  private router = inject(Router);
+  productsState$!: Observable<StateDashboardResponse>;
+  usersState$!: Observable<StateDashboardResponse>;
+  constructor(
+    private productService: ProductService,
+    private userService: UserService,
+    private toastrService: ToastrService,
+    private router: Router,
 
-  productsState$ = this.fetchProductsDashboard();
-  usersState$ = this.fetchUsersDashboard();
+  ) { }
+
+  ngOnInit(): void {
+    this.productsState$ = this.fetchProductsDashboard();
+    this.usersState$ = this.fetchUsersDashboard();
+  }
 
   private fetchProductsDashboard(): Observable<StateDashboardResponse> {
     return this.productService.getAllProducts().pipe(

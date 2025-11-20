@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit { // Implemente OnInit
   ) { }
 
   ngOnInit(): void {
-    this.state$ = this.fetchProducts(); // Inicializa AQUI
+    this.state$ = this.fetchProducts();
   }
 
   private fetchProducts(): Observable<StateProductsResponse> {

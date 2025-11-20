@@ -25,6 +25,7 @@ import { catchError, map, Observable, of, startWith } from 'rxjs';
 export class ProductTableComponent {
   isDeleting: boolean = false;
   selectedProduct: ProductResponse | null = null;
+  state$!: Observable<StateProductsResponse>;
 
   @ViewChild('viewProductModal') viewProductModal!: TemplateRef<any>;
   @ViewChild('deleteConfirmationModal')
@@ -35,7 +36,9 @@ export class ProductTableComponent {
   private modalService = inject(NgbModal);
   private destroyRef = inject(DestroyRef);
 
-  state$ = this.fetchProducts();
+  ngOnInit(): void {
+    this.state$ = this.fetchProducts();
+  }
 
   private fetchProducts(): Observable<StateProductsResponse> {
     return this.productService.getAllProducts().pipe(
