@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
@@ -35,6 +36,7 @@ export class ProductTableComponent {
   private toastrService = inject(ToastrService);
   private modalService = inject(NgbModal);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.state$ = this.fetchProducts();
@@ -110,6 +112,7 @@ export class ProductTableComponent {
           },
           complete: () => {
             this.isDeleting = false;
+            this.cdr.detectChanges();
           },
         });
     }

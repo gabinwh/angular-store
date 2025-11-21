@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../../../../../core/services/product-service';
@@ -23,6 +23,7 @@ export class CreateEditProudct {
   private fb = inject(FormBuilder);
   private productService = inject(ProductService);
   private toastrService = inject(ToastrService);
+  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.createForm();
@@ -87,6 +88,7 @@ export class CreateEditProudct {
             },
             complete: () => {
               this.isSending = false;
+              this.cdr.detectChanges();
             },
           });
       } else {
@@ -103,6 +105,7 @@ export class CreateEditProudct {
             },
             complete: () => {
               this.isSending = false;
+              this.cdr.detectChanges();
             },
           });
       }

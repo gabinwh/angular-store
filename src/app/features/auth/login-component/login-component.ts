@@ -4,6 +4,7 @@ import {
   inject,
   ViewChild,
   DestroyRef,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -33,6 +34,7 @@ export class LoginComponent {
   private toastrService = inject(ToastrService);
   private routeActivated = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  private cdr = inject(ChangeDetectorRef);
 
   form!: FormGroup;
   errorMessage: string | null = null;
@@ -61,6 +63,7 @@ export class LoginComponent {
         },
         complete: () => {
           this.isCredentialsLoading = false;
+          this.cdr.detectChanges();
         },
       });
     }
