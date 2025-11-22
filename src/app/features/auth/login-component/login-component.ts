@@ -4,7 +4,6 @@ import {
   inject,
   ViewChild,
   DestroyRef,
-  ChangeDetectorRef,
 } from '@angular/core';
 import { AuthService } from '../../../core/services/auth-service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -14,6 +13,7 @@ import { CreateUserModal } from '../create-user-modal/create-user-modal';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../../core/services/user-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login-component',
@@ -34,12 +34,19 @@ export class LoginComponent {
   private toastrService = inject(ToastrService);
   private routeActivated = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
-  private cdr = inject(ChangeDetectorRef);
 
+  // Reativos para estado
+  private isSendingSubject = new BehaviorSubject<boolean>(false);
+  isSending$ = this.isSendingSubject.asObservable();
+  private isCredentialsLoadingSubject = new BehaviorSubject<boolean>(false);
+  isCredentialsLoading$ = this.isCredentialsLoadingSubject.asObservable();
+  private credentialsSubject = new BehaviorSubject<any[]>([]);
+  credentials$ = this.credentialsSubject.asObservable();
+  // Reativo para mensagem de erro
+  private errorMessageSubject = new BehaviorSubject<string | null>(null);
+  errorMessage$ = this.errorMessageSubject.asObservable();
+  //
   form!: FormGroup;
-  errorMessage: string | null = null;
-  isCredentialsLoading: boolean = false;
-  credentials: any = [];
   private returnUrl: string | null = null;
 
   ngOnInit() {
@@ -51,19 +58,20 @@ export class LoginComponent {
 
   openCredentialsModal(): void {
     if (this.credentialsModalContent) {
-      this.isCredentialsLoading = true;
+      this.isCredentialsLoadingSubject.next(true);
       this.modalService.open(this.credentialsModalContent);
-      this.userService.getAllUsers().subscribe({
+
+      this.userService.getAllUsers().pipe(
+        finalize(() => {
+          this.isCredentialsLoadingSubject.next(false);
+        })
+      ).subscribe({
         next: (data) => {
-          this.credentials = data;
+          this.credentialsSubject.next(data);
           this.toastrService.success('Credentials loaded successfully!');
         },
         error: (error) => {
           this.toastrService.error('Unable to load credentials!');
-        },
-        complete: () => {
-          this.isCredentialsLoading = false;
-          this.cdr.detectChanges();
         },
       });
     }
@@ -111,26 +119,31 @@ export class LoginComponent {
   }
 
   onLogin(): void {
-    if (this.form.valid) {
-      this.authService
-        .login(this.form.value)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (data) => {
-            if (this.returnUrl) {
-              this.router.navigateByUrl(this.returnUrl);
-            } else {
-              this.router.navigate(['/home']);
-            }
-            this.toastrService.success('Login successful!');
-          },
-          error: (error) => {
-            this.errorMessage =
-              'Invalid username or password. Please try again.';
-            this.toastrService.error('Unable to login!');
-          },
-        });
-    }
+    if (!this.form.valid) return;
+    this.isSendingSubject.next(true);
+    this.authService
+      .login(this.form.value)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.isSendingSubject.next(false)
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.errorMessageSubject.next(null);
+          if (this.returnUrl) {
+            this.router.navigateByUrl(this.returnUrl);
+          } else {
+            this.router.navigate(['/home']);
+          }
+          this.toastrService.success('Login successful!');
+        },
+        error: (error) => {
+          this.errorMessageSubject.next('Invalid username or password. Please try again.');
+          this.toastrService.error('Unable to login!');
+        }
+      });
   }
 
   openRegisterModal(): void {

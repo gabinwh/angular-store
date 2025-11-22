@@ -4,6 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../../core/services/user-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-create-user-modal',
@@ -19,7 +20,9 @@ export class CreateUserModal {
   private destroyRef = inject(DestroyRef);
 
   form!: FormGroup;
-  isSaving: boolean = false;
+  //Controla o estado
+  private isSendingSubject = new BehaviorSubject<boolean>(false);
+  isSending$ = this.isSendingSubject.asObservable();
 
   ngOnInit() {
     this.initForm();
@@ -83,11 +86,16 @@ export class CreateUserModal {
   }
 
   onRegister(): void {
-    this.isSaving = true;
+    this.isSendingSubject.next(true);
     if (this.form.valid) {
       this.userService
         .createUser(this.form.value)
-        .pipe(takeUntilDestroyed(this.destroyRef))
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          finalize(() => {
+            this.isSendingSubject.next(false)
+          })
+        )
         .subscribe({
           next: (userResponse) => {
             this.toastrService.success(
@@ -101,10 +109,7 @@ export class CreateUserModal {
               'An error occurred while creating the account.',
               'Error'
             );
-          },
-          complete: () => {
-            this.isSaving = false;
-          },
+          }
         });
     }
   }

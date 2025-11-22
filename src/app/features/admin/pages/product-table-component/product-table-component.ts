@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
@@ -15,7 +14,7 @@ import {
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateEditProudct } from '../modals/create-edit-proudct/create-edit-proudct';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, map, Observable, of, startWith } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, map, Observable, of, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-product-table-component',
@@ -24,7 +23,10 @@ import { catchError, map, Observable, of, startWith } from 'rxjs';
   styleUrl: './product-table-component.scss',
 })
 export class ProductTableComponent {
-  isDeleting: boolean = false;
+  //Controla a deleção
+  private isDeletingSubject = new BehaviorSubject<boolean>(false);
+  isDeleting$ = this.isDeletingSubject.asObservable();
+  //
   selectedProduct: ProductResponse | null = null;
   state$!: Observable<StateProductsResponse>;
 
@@ -36,7 +38,6 @@ export class ProductTableComponent {
   private toastrService = inject(ToastrService);
   private modalService = inject(NgbModal);
   private destroyRef = inject(DestroyRef);
-  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.state$ = this.fetchProducts();
@@ -97,24 +98,25 @@ export class ProductTableComponent {
   }
 
   deleteProduct(productId: number | undefined | null): void {
-    if (productId) {
-      this.isDeleting = true;
-      this.productService
-        .deleteProductById(productId)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.toastrService.success('Product deleted successfully!');
-            this.modalService.dismissAll();
-          },
-          error: (error) => {
-            this.toastrService.error('Failed to delete the product.', 'Error');
-          },
-          complete: () => {
-            this.isDeleting = false;
-            this.cdr.detectChanges();
-          },
-        });
-    }
+    if (!productId) return;
+    this.isDeletingSubject.next(true);
+    this.productService
+      .deleteProductById(productId)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.isDeletingSubject.next(false);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.toastrService.success('Product deleted successfully!');
+          this.modalService.dismissAll();
+          this.state$ = this.fetchProducts();
+        },
+        error: (error) => {
+          this.toastrService.error('Failed to delete the product.', 'Error');
+        },
+      });
   }
 }

@@ -1,70 +1,115 @@
+@let isSending = (isSending$ | async);
 <div class="modal-header">
-    <h5 class="modal-title">Add New Product</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+  <h5 class="modal-title">Add New Product</h5>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="activeModal.dismiss()"
+  ></button>
 </div>
 <div class="modal-body">
-    <form [formGroup]="form">
-        <mat-form-field appearance="outline" class="w-100 mb-3">
-            <mat-label>Title</mat-label>
-            <input formControlName="title" matInput type="text" placeholder="Enter the product title" />
-            @if (getErrorMessage('title')) {
-            <mat-error>
-                {{ getErrorMessage('title') }}
-            </mat-error>
-            }
-        </mat-form-field>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+      <mat-label>Title</mat-label>
+      <input
+        formControlName="title"
+        matInput
+        type="text"
+        placeholder="Enter the product title"
+      />
+      @if (getErrorMessage('title')) {
+      <mat-error>
+        {{ getErrorMessage("title") }}
+      </mat-error>
+      }
+    </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-100 mb-3">
-            <mat-label>Description</mat-label>
-            <textarea formControlName="description" matInput placeholder="Enter the product description"></textarea>
-            @if (getErrorMessage('description')) {
-            <mat-error>
-                {{ getErrorMessage('description') }}
-            </mat-error>
-            }
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+      <mat-label>Description</mat-label>
+      <textarea
+        formControlName="description"
+        matInput
+        placeholder="Enter the product description"
+      ></textarea>
+      @if (getErrorMessage('description')) {
+      <mat-error>
+        {{ getErrorMessage("description") }}
+      </mat-error>
+      }
+    </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-100 mb-3">
-            <mat-label>Price</mat-label>
-            <input formControlName="price" matInput type="number" placeholder="Enter the product price" />
-            @if (getErrorMessage('price')) {
-            <mat-error>
-                {{ getErrorMessage('price') }}
-            </mat-error>
-            }
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+      <mat-label>Price</mat-label>
+      <input
+        formControlName="price"
+        matInput
+        type="number"
+        placeholder="Enter the product price"
+      />
+      @if (getErrorMessage('price')) {
+      <mat-error>
+        {{ getErrorMessage("price") }}
+      </mat-error>
+      }
+    </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-100 mb-3">
-            <mat-label>Category</mat-label>
-            <input formControlName="category" matInput type="text" placeholder="Enter the product category" />
-            @if (getErrorMessage('category')) {
-            <mat-error>
-                {{ getErrorMessage('category') }}
-            </mat-error>
-            }
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+      <mat-label>Category</mat-label>
+      <input
+        formControlName="category"
+        matInput
+        type="text"
+        placeholder="Enter the product category"
+      />
+      @if (getErrorMessage('category')) {
+      <mat-error>
+        {{ getErrorMessage("category") }}
+      </mat-error>
+      }
+    </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-100 mb-3">
-            <mat-label>Image URL</mat-label>
-            <input formControlName="image" matInput type="text" placeholder="Enter the product image URL" />
-            @if (getErrorMessage('image')) {
-            <mat-error>
-                {{ getErrorMessage('image') }}
-            </mat-error>
-            }
-        </mat-form-field>
-    </form>
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+      <mat-label>Image URL</mat-label>
+      <input
+        formControlName="image"
+        matInput
+        type="text"
+        placeholder="Enter the product image URL"
+      />
+      @if (getErrorMessage('image')) {
+      <mat-error>
+        {{ getErrorMessage("image") }}
+      </mat-error>
+      }
+    </mat-form-field>
+  </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
-    @if (!isSending) {
-    <button type="submit" class="btn btn-primary" (click)="onSubmit()" [disabled]="form.invalid || isSending">
-        {{defineLabelBtn()}}
-    </button>
-    } @else {
-    <button type="button" class="btn btn-primary" disabled>
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Sending...
-    </button>
-    }
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="activeModal.dismiss()"
+  >
+    Cancel
+  </button>
+  @if (!isSending) {
+  <button
+    type="submit"
+    class="btn btn-primary"
+    (click)="onSubmit()"
+    [disabled]="form.invalid || isSending"
+  >
+    {{ defineLabelBtn() }}
+  </button>
+  } @else {
+  <button type="button" class="btn btn-primary" disabled>
+    <span
+      class="spinner-border spinner-border-sm"
+      role="status"
+      aria-hidden="true"
+    ></span>
+    Sending...
+  </button>
+  }
 </div>

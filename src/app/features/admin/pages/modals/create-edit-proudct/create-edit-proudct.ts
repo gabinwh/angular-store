@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject, Input } from '@angular/core';
+import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../../../../../core/services/product-service';
 import { Product, ProductResponse } from '../../../../../shared/utils/models';
 import { ToastrService } from 'ngx-toastr';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-create-edit-proudct',
@@ -16,14 +17,15 @@ export class CreateEditProudct {
   @Input() productToEdit: ProductResponse | null = null;
 
   form!: FormGroup;
-  isSending: boolean = false;
+  //Controla o estado
+  private isSendingSubject = new BehaviorSubject<boolean>(false);
+  isSending$ = this.isSendingSubject.asObservable();
 
   private destroyRef = inject(DestroyRef);
   protected activeModal = inject(NgbActiveModal);
   private fb = inject(FormBuilder);
   private productService = inject(ProductService);
   private toastrService = inject(ToastrService);
-  private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.createForm();
@@ -64,7 +66,7 @@ export class CreateEditProudct {
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.isSending = true;
+      this.isSendingSubject.next(true);
 
       let body: Product = {
         title: this.form.get('title')?.value,
@@ -77,7 +79,12 @@ export class CreateEditProudct {
       if (this.productToEdit && this.productToEdit.id) {
         this.productService
           .updateProduct(this.productToEdit.id, body)
-          .pipe(takeUntilDestroyed(this.destroyRef))
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => {
+              this.isSendingSubject.next(false)
+            })
+          )
           .subscribe({
             next: () => {
               this.toastrService.success('Product updated successfully!');
@@ -85,16 +92,17 @@ export class CreateEditProudct {
             },
             error: () => {
               this.toastrService.error('Failed to update the product.');
-            },
-            complete: () => {
-              this.isSending = false;
-              this.cdr.detectChanges();
-            },
+            }
           });
       } else {
         this.productService
           .createProduct(body)
-          .pipe(takeUntilDestroyed(this.destroyRef))
+          .pipe(
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => {
+              this.isSendingSubject.next(false)
+            })
+          )
           .subscribe({
             next: () => {
               this.toastrService.success('Product created successfully!');
@@ -102,11 +110,7 @@ export class CreateEditProudct {
             },
             error: () => {
               this.toastrService.error('Failed to create the product.');
-            },
-            complete: () => {
-              this.isSending = false;
-              this.cdr.detectChanges();
-            },
+            }
           });
       }
     } else {

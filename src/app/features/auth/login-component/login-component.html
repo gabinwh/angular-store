@@ -5,20 +5,30 @@
       <form [formGroup]="form">
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Username</mat-label>
-          <input formControlName="username" matInput type="text" placeholder="Insira o nome do seu usuário" />
+          <input
+            formControlName="username"
+            matInput
+            type="text"
+            placeholder="Insira o nome do seu usuário"
+          />
           @if (getErrorMessage('username')) {
           <mat-error>
-            {{getErrorMessage('username')}}
+            {{ getErrorMessage("username") }}
           </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Password</mat-label>
-          <input formControlName="password" matInput type="password" placeholder="Insira a sua senha" />
+          <input
+            formControlName="password"
+            matInput
+            type="password"
+            placeholder="Insira a sua senha"
+          />
           @if (getErrorMessage('password')) {
           <mat-error>
-            {{getErrorMessage('password')}}
+            {{ getErrorMessage("password") }}
           </mat-error>
           }
         </mat-form-field>
@@ -26,14 +36,33 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-      <button type="button" class="btn btn-link p-0" (click)="openRegisterModal()">Create account</button>
-      <button type="button" class="btn btn-info" (click)="openCredentialsModal()">Credentials</button>
-      <button [disabled]="!form.valid" type="button" class="btn btn-primary" (click)="onLogin()">Submit</button>
+      <button
+        type="button"
+        class="btn btn-link p-0"
+        (click)="openRegisterModal()"
+      >
+        Create account
+      </button>
+      <button
+        type="button"
+        class="btn btn-info"
+        (click)="openCredentialsModal()"
+      >
+        Credentials
+      </button>
+      <button
+        [disabled]="!form.valid || (isSending$ | async)"
+        type="button"
+        class="btn btn-primary"
+        (click)="onLogin()"
+      >
+        Submit
+      </button>
     </div>
 
-    @if (errorMessage) {
+    @if (errorMessage$ | async) {
     <div class="alert alert-danger mt-3" role="alert">
-      {{ errorMessage }}
+      {{ errorMessage$ | async }}
     </div>
     }
   </div>
@@ -43,10 +72,15 @@
 <ng-template #credentialsModalContent let-modal>
   <div class="modal-header">
     <h5 class="modal-title">Credentials</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('fechar')"></button>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('fechar')"
+    ></button>
   </div>
   <div class="modal-body">
-    @if (!isCredentialsLoading) {
+    @if (!(isCredentialsLoading$ | async)) {
     <table class="table table-striped">
       <thead>
         <tr>
@@ -55,7 +89,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (user of credentials; track user.id) {
+        @for (user of (credentials$ | async); track user.id) {
         <tr>
           <td>{{ user.username }}</td>
           <td>{{ user.password }}</td>
@@ -73,6 +107,12 @@
     <small class="text-muted">Use these credentials to test your login.</small>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancelar')">Close</button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="modal.dismiss('cancelar')"
+    >
+      Close
+    </button>
   </div>
 </ng-template>
