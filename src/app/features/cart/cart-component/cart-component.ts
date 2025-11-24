@@ -20,7 +20,6 @@ export class CartComponent {
   ) { }
 
   private refreshCartSubject = new BehaviorSubject<void>(undefined);
-
   cartState$!: Observable<CartState>;
 
   ngOnInit(): void {
@@ -29,7 +28,6 @@ export class CartComponent {
 
   private fetchCartState(): Observable<CartState> {
     return this.refreshCartSubject.pipe(
-      startWith(undefined),
       switchMap(() => {
         const productsInCart = this.cartService.cartItems();
 

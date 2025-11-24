@@ -15,10 +15,8 @@
   <div>
     <div class="row">
       <div class="col-lg-8">
-        <div
-          class="card mb-3 shadow-sm"
-          *ngFor="let product of state.cartProducts"
-        >
+        @for (product of state.cartProducts; track $index) {
+        <div class="card mb-3 shadow-sm">
           <div class="row g-0">
             <div
               class="col-md-3 d-flex align-items-center justify-content-center p-3"
@@ -72,6 +70,7 @@
             </div>
           </div>
         </div>
+        }
       </div>
 
       <div class="col-lg-4">
