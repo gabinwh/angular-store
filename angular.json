@@ -23,11 +23,7 @@
 			"architect": {
 				"build": {
 					"builder": "@angular-architects/native-federation:build",
-          "options": {
-            "styles": [
-              "src/custom-theme.scss"
-            ]
-          },
+					"options": {},
 					"configurations": {
 						"production": {
 							"target": "my-angular-store:esbuild:production"
