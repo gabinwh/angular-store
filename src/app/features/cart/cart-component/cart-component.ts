@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, catchError, finalize, forkJoin, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { CartService } from '../../../core/services/cart-service';
 import { ProductService } from '../../../core/services/product-service';
-import { CartProduct, CartState, ProductResponse } from '../../../shared/utils/models';
+import { CartProduct, CartState, ProductResponse } from '../../../shared/utils/models/models';
 
 @Component({
   selector: 'app-cart-component',

@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../../../../../core/services/product-service';
-import { Product, ProductResponse } from '../../../../../shared/utils/models';
+import { Product, ProductResponse } from '../../../../../shared/utils/models/models';
 import { ToastrService } from 'ngx-toastr';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, finalize } from 'rxjs';

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'; // Adicione OnInit
 import { ProductService } from '../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, map, Observable, of, startWith } from 'rxjs';
-import { StateProductsResponse } from '../../../shared/utils/models';
+import { StateProductsResponse } from '../../../shared/utils/models/models';
 
 @Component({
   selector: 'app-home-component',

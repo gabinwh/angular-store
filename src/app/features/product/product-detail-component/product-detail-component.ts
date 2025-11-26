@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import {
   ProductResponse,
   StateProductResponse,
-} from '../../../shared/utils/models';
+} from '../../../shared/utils/models/models';
 import { AuthService } from '../../../core/services/auth-service';
 import { CartService } from '../../../core/services/cart-service';
 

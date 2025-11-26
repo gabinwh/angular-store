@@ -2,9 +2,9 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../../../core/services/user-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, finalize } from 'rxjs';
+import { AuthService } from '../../../core/services/auth-service';
 
 @Component({
   selector: 'app-create-user-modal',
@@ -15,7 +15,7 @@ import { BehaviorSubject, finalize } from 'rxjs';
 export class CreateUserModal {
   protected activeModal = inject(NgbActiveModal);
   private fb = inject(FormBuilder);
-  private userService = inject(UserService);
+  private authService = inject(AuthService);
   private toastrService = inject(ToastrService);
   private destroyRef = inject(DestroyRef);
 
@@ -31,31 +31,9 @@ export class CreateUserModal {
 
   private initForm(): void {
     this.form = this.fb.group({
-      username: [
-        null,
-        [
-          Validators.required,
-          Validators.maxLength(20),
-          Validators.minLength(1),
-        ],
-      ],
-      password: [
-        null,
-        [
-          Validators.required,
-          Validators.maxLength(20),
-          Validators.minLength(3),
-        ],
-      ],
-      email: [
-        null,
-        [
-          Validators.email,
-          Validators.required,
-          Validators.maxLength(150),
-          Validators.minLength(3),
-        ],
-      ],
+      name: [null, [Validators.required, Validators.maxLength(20), Validators.minLength(1)]],
+      password: [null, [Validators.required, Validators.maxLength(20), Validators.minLength(3)]],
+      email: [null, [Validators.email, Validators.required, Validators.maxLength(150), Validators.minLength(3)]],
     });
   }
 
@@ -88,8 +66,8 @@ export class CreateUserModal {
   onRegister(): void {
     this.isSendingSubject.next(true);
     if (this.form.valid) {
-      this.userService
-        .createUser(this.form.value)
+      this.authService
+        .register(this.form.value)
         .pipe(
           takeUntilDestroyed(this.destroyRef),
           finalize(() => {
@@ -97,7 +75,7 @@ export class CreateUserModal {
           })
         )
         .subscribe({
-          next: (userResponse) => {
+          next: (registerResponse) => {
             this.toastrService.success(
               'Account created successfully!',
               'Success!'

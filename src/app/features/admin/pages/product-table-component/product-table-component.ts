@@ -10,7 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import {
   ProductResponse,
   StateProductsResponse,
-} from '../../../../shared/utils/models';
+} from '../../../../shared/utils/models/models';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CreateEditProudct } from '../modals/create-edit-proudct/create-edit-proudct';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';

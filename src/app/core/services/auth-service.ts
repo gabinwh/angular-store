@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { CartService } from './cart-service';
+import { LoginCredentials, RegisterBody, RegisterResponse } from '../../shared/utils/models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +17,22 @@ export class AuthService {
     private cartService: CartService,
   ) { }
 
-  private apiUrl = 'https://fakestoreapi.com/auth/login';
+  private apiUrl = 'http://localhost:8080/api/auth';
   private tokenKey = 'auth_token';
 
   private isLoggedInSignal = signal(false);
 
-  login(credentials: { username: string, password: string }): Observable<any> {
-    return this.httpService.post<any>(this.apiUrl, credentials).pipe(
+  login(credentials: LoginCredentials): Observable<any> {
+    return this.httpService.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(data => {
         localStorage.setItem(this.tokenKey, data.token);
         this.isLoggedInSignal.set(true);
       })
     );
+  }
+
+  register(body: RegisterBody): Observable<RegisterResponse> {
+    return this.httpService.post<RegisterResponse>(`${this.apiUrl}/register`, body);
   }
 
   logout(): void {
@@ -55,7 +60,7 @@ export class AuthService {
 
     try {
       const decodedToken: any = jwtDecode(token);
-      return decodedToken.user || null;
+      return decodedToken.sub || null;
     } catch (error) {
       console.error("Failed to decode JWT token:", error);
       return null;

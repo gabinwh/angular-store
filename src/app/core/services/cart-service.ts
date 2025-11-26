@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CartItem, ProductResponse } from '../../shared/utils/models';
+import { CartItem, ProductResponse } from '../../shared/utils/models/models';
 
 
 @Injectable({
@@ -57,7 +57,7 @@ export class CartService {
       if (itemToUpdate) {
         if (itemToUpdate.quantity > 1) {
           itemToUpdate.quantity -= 1;
-          return [...items]; 
+          return [...items];
         } else {
           return items.filter(item => item.productId !== productId);
         }

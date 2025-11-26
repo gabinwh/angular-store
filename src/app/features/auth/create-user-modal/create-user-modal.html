@@ -11,16 +11,16 @@
 <div class="modal-body">
   <form [formGroup]="form">
     <mat-form-field appearance="outline" class="w-100 mb-3">
-      <mat-label>Username</mat-label>
+      <mat-label>Name</mat-label>
       <input
-        formControlName="username"
+        formControlName="name"
         matInput
         type="text"
         placeholder="Insira o nome do usuário"
       />
-      @if (getErrorMessage('username')) {
+      @if (getErrorMessage('name')) {
       <mat-error>
-        {{ getErrorMessage("username") }}
+        {{ getErrorMessage("name") }}
       </mat-error>
       }
     </mat-form-field>

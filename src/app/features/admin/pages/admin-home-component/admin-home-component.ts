@@ -4,8 +4,7 @@ import { ProductService } from '../../../../core/services/product-service';
 import { ToastrService } from 'ngx-toastr';
 import { of, Observable } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
-import { UserService } from '../../../../core/services/user-service';
-import { StateDashboardResponse } from '../../../../shared/utils/models';
+import { StateDashboardResponse } from '../../../../shared/utils/models/models';
 
 @Component({
   selector: 'app-admin-home-component',
@@ -15,10 +14,8 @@ import { StateDashboardResponse } from '../../../../shared/utils/models';
 })
 export class AdminHomeComponent {
   productsState$!: Observable<StateDashboardResponse>;
-  usersState$!: Observable<StateDashboardResponse>;
   constructor(
     private productService: ProductService,
-    private userService: UserService,
     private toastrService: ToastrService,
     private router: Router,
 
@@ -26,7 +23,6 @@ export class AdminHomeComponent {
 
   ngOnInit(): void {
     this.productsState$ = this.fetchProductsDashboard();
-    this.usersState$ = this.fetchUsersDashboard();
   }
 
   private fetchProductsDashboard(): Observable<StateDashboardResponse> {
@@ -53,32 +49,6 @@ export class AdminHomeComponent {
       })
     );
   }
-
-  private fetchUsersDashboard(): Observable<StateDashboardResponse> {
-    return this.userService.getAllUsers().pipe(
-      map((users) => {
-        return {
-          loading: false,
-          error: false,
-          count: users.length,
-        };
-      }),
-      catchError(() => {
-        this.toastrService.error('Unable to load user dashboard data!', 'Error');
-        return of({
-          loading: false,
-          error: true,
-          count: 0,
-        });
-      }),
-      startWith({
-        loading: true,
-        error: false,
-        count: 0,
-      })
-    );
-  }
-
   goToProductsTable(): void {
     this.router.navigate(['/admin/products']);
   }

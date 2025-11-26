@@ -54,7 +54,6 @@ export type StateDashboardResponse = {
   count: number;
 };
 
-
 export type CartState = {
   loading: boolean;
   error: boolean;

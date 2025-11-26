@@ -11,7 +11,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserModal } from '../create-user-modal/create-user-modal';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../../../core/services/user-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, finalize } from 'rxjs';
 
@@ -28,7 +27,6 @@ export class LoginComponent {
 
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private userService = inject(UserService);
   private router = inject(Router);
   private modalService = inject(NgbModal);
   private toastrService = inject(ToastrService);
@@ -56,34 +54,14 @@ export class LoginComponent {
       this.routeActivated.snapshot.queryParamMap.get('returnUrl');
   }
 
-  openCredentialsModal(): void {
-    if (this.credentialsModalContent) {
-      this.isCredentialsLoadingSubject.next(true);
-      this.modalService.open(this.credentialsModalContent);
-
-      this.userService.getAllUsers().pipe(
-        finalize(() => {
-          this.isCredentialsLoadingSubject.next(false);
-        })
-      ).subscribe({
-        next: (data) => {
-          this.credentialsSubject.next(data);
-          this.toastrService.success('Credentials loaded successfully!');
-        },
-        error: (error) => {
-          this.toastrService.error('Unable to load credentials!');
-        },
-      });
-    }
-  }
-
   private initForm(): void {
     this.form = this.fb.group({
-      username: [
+      email: [
         null,
         [
           Validators.required,
-          Validators.maxLength(20),
+          Validators.email,
+          Validators.maxLength(100),
           Validators.minLength(1),
         ],
       ],
