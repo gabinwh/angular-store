@@ -5,12 +5,7 @@
       <form [formGroup]="form">
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Email</mat-label>
-          <input
-            formControlName="email"
-            matInput
-            type="text"
-            placeholder="Insira o nome do seu usuário"
-          />
+          <input formControlName="email" matInput type="text" placeholder="Insira o nome do seu usuário" />
           @if (getErrorMessage('email')) {
           <mat-error>
             {{ getErrorMessage("email") }}
@@ -20,12 +15,7 @@
 
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Password</mat-label>
-          <input
-            formControlName="password"
-            matInput
-            type="password"
-            placeholder="Insira a sua senha"
-          />
+          <input formControlName="password" matInput type="password" placeholder="Insira a sua senha" />
           @if (getErrorMessage('password')) {
           <mat-error>
             {{ getErrorMessage("password") }}
@@ -36,19 +26,10 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-      <button
-        type="button"
-        class="btn btn-link p-0"
-        (click)="openRegisterModal()"
-      >
+      <button mat-button (click)="openRegisterModal()">
         Create account
       </button>
-      <button
-        [disabled]="!form.valid || (isSending$ | async)"
-        type="button"
-        class="btn btn-primary"
-        (click)="onLogin()"
-      >
+      <button mat-raised-button color="primary" [disabled]="!form.valid || (isSending$ | async)" (click)="onLogin()">
         Submit
       </button>
     </div>

@@ -8,7 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CreateUserModal } from './create-user-modal/create-user-modal';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthRoutingModule } from './auth-routing.module';
-
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,8 @@ import { AuthRoutingModule } from './auth-routing.module';
     MatInputModule,
     ReactiveFormsModule,
     MatTooltipModule,
-    AuthRoutingModule
+    AuthRoutingModule,
+    MatButtonModule
   ]
 })
 export class AuthModule { }
