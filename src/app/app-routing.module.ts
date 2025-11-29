@@ -1,16 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './features/home/home-component/home-component';
-import { ProductDetailComponent } from './features/product/product-detail-component/product-detail-component';
-import { LoginComponent } from './features/auth/login-component/login-component';
 import { authGuard } from './core/guards/auth-guard';
 
 const routes: Routes = [
-  {
-    path: 'login',
-    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
-  },
-
   {
     path: 'home',
     loadChildren: () => import('./features/home/home.module').then(m => m.HomeModule)
